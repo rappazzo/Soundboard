@@ -1,11 +1,7 @@
 # Build and Object Folders
-bin/
-obj/
+classes/
+target/
 
 #User Specific Files
-*.user
-*.suo
-
-#Resource Caches
-_ReSharper.*
-*.sln.cache
+bin/soundboard.properties
+bin/*.txt
