@@ -17,13 +17,9 @@
  **/
 package org.soundboard.server.inputservice;
 
-import java.util.*;
-
-
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
 import org.soundboard.server.*;
-import org.soundboard.server.command.*;
 
 public class GoogleTalkInputService extends InputService implements Runnable, Stoppable {
 

@@ -17,7 +17,6 @@
  **/
 package org.soundboard.audio;
 
-import java.io.*;
 import javax.sound.sampled.*;
 import org.soundboard.library.*;
 import org.soundboard.server.*;

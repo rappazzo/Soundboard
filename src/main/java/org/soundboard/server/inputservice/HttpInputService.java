@@ -206,7 +206,7 @@ public class HttpInputService extends InputService {
           */
          listener.setSoTimeout(0);
          listener.setTcpNoDelay(true);
-         DefaultHttpServletRequest servletRequest = new DefaultHttpServletRequest(inStream);
+         DefaultHttpServletRequest servletRequest = DefaultHttpServletRequest.create(inStream, listener.getInetAddress());
          try {
             boolean servletRun = false;
             for (Servlet servlet : servlets) {

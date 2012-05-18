@@ -137,7 +137,7 @@ public final class CommandHandler {
                   buf.append(shortCut);
                   buf.append("]");
                }
-               int i = cmdInvokation.length();
+               cmdInvokation.length();
                buf.append(" --> ");
                buf.append(helpText);
             }

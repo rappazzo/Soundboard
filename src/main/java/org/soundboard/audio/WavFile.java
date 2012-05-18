@@ -17,7 +17,6 @@
  **/
 package org.soundboard.audio;
 
-import java.io.*;
 
 public class WavFile {
 

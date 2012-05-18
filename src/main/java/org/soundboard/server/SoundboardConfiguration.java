@@ -19,7 +19,6 @@ package org.soundboard.server;
 
 import java.io.*;
 import java.util.*;
-import org.soundboard.server.inputservice.*;
 
 public class SoundboardConfiguration {
    static SoundboardConfiguration INSTANCE = null;

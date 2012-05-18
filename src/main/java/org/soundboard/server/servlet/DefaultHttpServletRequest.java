@@ -19,13 +19,13 @@ package org.soundboard.server.servlet;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.*;
 import java.security.*;
 import java.text.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import org.soundboard.util.*;
+import com.google.common.collect.*;
 
 /**
  * @author mrappazz
@@ -36,17 +36,33 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
 
    ChunkedByteBuffer requestBytes = new ChunkedByteBuffer();
 
-   private Map<String, Set<String>> parameterMap = new HashMap<String, Set<String>>();
+   private Multimap<String, String> parameterMap = HashMultimap.create();
    private Map<String, MultipartData> multipartParameterMap = new HashMap<String, MultipartData>();
    private String method = null;
    private String requestedURI = null;
-   private String httpVersionInfo;
+   private String queryString = null;
+   private String contentType = null;
    private Map<String, String> headerMap = new HashMap<String, String>();
 
-   public DefaultHttpServletRequest(InputStream inStream) {
+   private String remoteAddress;
+
+   public static DefaultHttpServletRequest create(InputStream inStream, InetAddress address) {
       try {
-         requestBytes.append(inStream, true);
-         ServletInputStream in = getInputStream();
+         DefaultHttpServletRequest request = new DefaultHttpServletRequest();
+         //should we check for inStream.available()?
+         request.requestBytes.append(inStream, true);
+         if (request.requestBytes.size() == 0) {
+            try {
+               Thread.sleep(50);
+            } catch (Exception e) {
+            }
+            request.requestBytes.append(inStream, true);
+            if (request.requestBytes.size() == 0) {
+               return null;
+            }
+         }
+         request.remoteAddress = address.getHostAddress();
+         ServletInputStream in = request.getInputStream();
          byte[] buffer = new byte[1024];
 
          int bytesRead = in.readLine(buffer, 0, buffer.length);
@@ -54,37 +70,52 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
             bytesRead = in.readLine(buffer, 0, buffer.length);
          }
 
-         String initialLine = bytesRead > 0 ? StringUtil.trim(new String(buffer, 0, bytesRead)) : "GET / HTTP/1.1";
+         String initialLine = bytesRead > 0 ? new String(buffer, 0, bytesRead) : "GET / HTTP/1.1";
          String[] initialLineParts = initialLine.split("\\s+");
-         method = initialLineParts[0];
-         requestedURI = initialLineParts[1];
+         request.method = initialLineParts[0];
+         request.requestedURI = initialLineParts[1];
          try {
-            requestedURI = URLDecoder.decode(requestedURI, CharsetConstants.UTF8.name());
+            request.requestedURI = URLDecoder.decode(request.requestedURI, CharsetConstants.UTF8.name());
          } catch (UnsupportedEncodingException e) {
-            requestedURI = URLDecoder.decode(requestedURI);
-            if (requestedURI == null) {
-               requestedURI = initialLineParts[1];
+            request.requestedURI = URLDecoder.decode(request.requestedURI);
+            if (request.requestedURI == null) {
+               request.requestedURI = initialLineParts[1];
             }
          }
-         httpVersionInfo = initialLineParts[2];
+         String[] parts = request.requestedURI.split("\\?", 2);
+         if (parts.length > 1) {
+            request.requestedURI = parts[0];
+            request.queryString = parts[1];
+            String[] paramKV = parts[1].split("&");
+            for (String kv : paramKV) {
+               String[] kAndV = kv.split("=");
+               request.parameterMap.put(kAndV[0], kAndV.length > 1 ? kAndV[1] : null);
+            }
+         }
 
+         String prevHeaderKey = null;
          while ((bytesRead = in.readLine(buffer, 0, buffer.length)) != -1) {
-            String headerElement = StringUtil.trim(new String(buffer, 0, bytesRead));
-            if (StringUtil.isNullOrEmpty(headerElement)) {
+            String headerElement = new String(buffer, 0, bytesRead).trim();
+            if (headerElement == null || headerElement.length() == 0) {
                //an empty line signifies the end of the header
                break;
             }
-            int splitIndex = headerElement.indexOf(":");
-            if (splitIndex >= 0) {
-               String key = URLDecoder.decode(headerElement.substring(0, splitIndex), CharsetConstants.UTF8.name());
-               String value = URLDecoder.decode(headerElement.substring(splitIndex + 2), CharsetConstants.UTF8.name());
-               headerMap.put(key, value);
+            String[] headerParts = headerElement.split(":", 2);
+            if (headerParts.length == 2) {
+               String key = URLDecoder.decode(headerParts[0].trim(), CharsetConstants.UTF8.name());
+               prevHeaderKey = key;
+               String value = URLDecoder.decode(headerParts[1].trim(), CharsetConstants.UTF8.name());
+               request.headerMap.put(key, value);
+            } else if (prevHeaderKey != null) {
+               //part of the previous header
+               String value = URLDecoder.decode(headerParts[0].trim(), CharsetConstants.UTF8.name());
+               request.headerMap.put(prevHeaderKey, request.headerMap.get(prevHeaderKey) + value);
             }
          }
 
          //do special processing for POST form data with multipart encoding
-         String contentType = getHeader(HttpConstants.CONTENT_TYPE);
-         if (HttpConstants.POST.equalsIgnoreCase(getMethod()) && contentType.startsWith(HttpConstants.MULTIPART)) {
+         String contentType = request.getHeader(HttpConstants.CONTENT_TYPE);
+         if (HttpConstants.POST.equalsIgnoreCase(request.getMethod()) && contentType != null && contentType.startsWith(HttpConstants.MULTIPART)) {
             //seek the boundary marker
             String boundaryMarker = null;
             for (String contentTypeData : contentType.split("; ?")) {
@@ -93,7 +124,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
                }
             }
             while ((bytesRead = in.readLine(buffer, 0, buffer.length)) != -1) {
-               if (StringUtil.trim(new String(buffer, 0, bytesRead)).endsWith(boundaryMarker)) {
+               if (new String(buffer, 0, bytesRead).trim().endsWith(boundaryMarker)) {
                   break;
                }
             }
@@ -101,8 +132,8 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
                Map<String, String> multipartDataHeader = new HashMap<String, String>();
                //we are now at the beginning of the multipart data
                while ((bytesRead = in.readLine(buffer, 0, buffer.length)) != -1) {
-                  String multipartElement = StringUtil.trim(new String(buffer, 0, bytesRead));
-                  if (StringUtil.isNullOrEmpty(multipartElement)) {
+                  String multipartElement = new String(buffer, 0, bytesRead).trim();
+                  if (multipartElement == null || multipartElement.length() == 0) {
                      //an empty line signifies the end of the multipartContentHeader
                      break;
                   }
@@ -127,37 +158,36 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
                }
                //read to the end of the line
                in.readLine(buffer, 0, buffer.length);
-               
+
                //"unread" the boundary marker from the data
-               String boundaryMatch = new String(multipartBinaryData.unappend(boundaryMarker.length() + 4));
                MultipartData multipart = new MultipartData(multipartDataHeader, multipartBinaryData);
                String dataKey = multipart.getSubHeaderValue(HttpConstants.CONTENT_DISPOSITION, "name");
-               multipartParameterMap.put(dataKey, multipart);
+               request.multipartParameterMap.put(dataKey, multipart);
                //if the multipart has no content type, then it is likely just normal, form data.  Try to put it in the regular parameter map.
                if (multipart.getHeader(HttpConstants.CONTENT_TYPE) == null) {
-                  Set<String> values = parameterMap.get(dataKey);
-                  if (values == null) {
-                     values = new HashSet<String>();
-                     parameterMap.put(dataKey, values);
-                  }
-                  values.add(multipartBinaryData.toChunkedCharBuffer().toString());
+                  request.parameterMap.put(dataKey, multipartBinaryData.toChunkedCharBuffer().toString());
                }
             }
          } else {
             String parameterString = null;
             if ((bytesRead = in.readLine(buffer, 0, buffer.length)) != -1) {
-               parameterString = StringUtil.trim(new String(buffer, 0, bytesRead));
-               while ((bytesRead = in.readLine(buffer, 0, buffer.length)) != -1 && StringUtil.isNullOrEmpty(parameterString)) {
-                  parameterString = StringUtil.trim(new String(buffer, 0, bytesRead));
+               parameterString = new String(buffer, 0, bytesRead).trim();
+               while ((bytesRead = in.readLine(buffer, 0, buffer.length)) != -1 && (parameterString == null || parameterString.length() == 0)) {
+                  parameterString = new String(buffer, 0, bytesRead).trim();
                }
             }
-            if (StringUtil.isNotNullOrEmpty(parameterString)) {
-               parseParametersFromRequest(parameterString);
+            if (parameterString != null && parameterString.length() > 0) {
+               request.parseParametersFromRequest(parameterString);
             }
          }
+         return request;
       } catch (IOException e) {
-         //ignore
+         e.printStackTrace();
+         return null;
       }
+   }
+
+   private DefaultHttpServletRequest() {
    }
 
    public ChunkedByteBuffer getRequestBytes() {
@@ -208,7 +238,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    public String getHeader(String headerKey) {
       return headerMap.get(headerKey);
    }
-   
+
    /**
     * get the multipart data
     */
@@ -267,7 +297,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
     * @see javax.servlet.http.HttpServletRequest#getQueryString()
     */
    public String getQueryString() {
-      return null;
+      return queryString;
    }
 
    /* (non-Javadoc)
@@ -393,7 +423,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
     * @see javax.servlet.ServletRequest#getContentType()
     */
    public String getContentType() {
-      return null;
+      return contentType != null ? contentType : "text/html";
    }
 
    /* (non-Javadoc)
@@ -432,8 +462,8 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
     */
    public String getParameter(String key) {
       String value = null;
-      Set<String> valueSet = parameterMap.get(key);
-      if (valueSet != null) {
+      Collection<String> valueSet = parameterMap.get(key);
+      if (valueSet != null && valueSet.size() > 0) {
          value = valueSet.iterator().next();
       }
       return value;
@@ -443,7 +473,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
     * @see javax.servlet.ServletRequest#getParameterMap()
     */
    public Map getParameterMap() {
-      return parameterMap;
+      return parameterMap.asMap();
    }
 
    /* (non-Javadoc)
@@ -458,7 +488,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
     */
    public String[] getParameterValues(String key) {
       String[] values = null;
-      Set<String> valueSet = parameterMap.get(key);
+      Collection<String> valueSet = parameterMap.get(key);
       if (valueSet != null) {
          values = valueSet.toArray(new String[valueSet.size()]);
       }
@@ -490,7 +520,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
     * @see javax.servlet.ServletRequest#getRemoteAddr()
     */
    public String getRemoteAddr() {
-      return null;
+      return remoteAddress;
    }
 
    /* (non-Javadoc)
@@ -527,6 +557,22 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    public int getServerPort() {
       return 0;
    }
+   
+   public String getLocalAddr() {
+      return null;
+   }
+   
+   public String getLocalName() {
+      return null;
+   }
+   
+   public int getLocalPort() {
+      return 0;
+   }
+   
+   public int getRemotePort() {
+      return 0;
+   }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#isSecure()
@@ -558,7 +604,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
 
    private void parseParametersFromRequest(String paramString) {
       //the last line of the request should have the parameters
-      if (StringUtil.isNotNullOrEmpty(paramString)) {
+      if (paramString != null && paramString.length() > 0) {
          String[] keyValuePairs = paramString.split("&");
          for (String keyValuePair : keyValuePairs) {
             String[] keyAndValue = keyValuePair.split("=");
@@ -570,7 +616,8 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
                if (key == null) {
                   key = keyAndValue[0];
                }
-            };
+            }
+            ;
             String value = null;
             try {
                value = keyAndValue.length >= 2 ? URLDecoder.decode(keyAndValue[1], CharsetConstants.UTF8.name()) : null;
@@ -580,12 +627,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
                   value = keyAndValue[1];
                }
             }
-            Set<String> values = parameterMap.get(key);
-            if (values == null) {
-               values = new HashSet<String>();
-               parameterMap.put(key, values);
-            }
-            values.add(value);
+            parameterMap.put(key, value);
          }
       }
    }
@@ -611,7 +653,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
             for (String subHeaderChunk : subHeaders) {
                String[] subHeader = subHeaderChunk.split("=");
                if (subHeader.length > 0 && subHeader[0].equals(subHeaderKey)) {
-                  return subHeader.length > 1 ? StringUtil.deQuote(subHeader[1]) : "";
+                  return subHeader.length > 1 ? subHeader[1].substring(1, subHeader[1].length() - 1) : "";
                }
             }
          }

@@ -19,7 +19,6 @@ package org.soundboard.audio;
 
 import java.io.*;
 import javax.sound.sampled.*;
-import org.soundboard.server.*;
 
 public class AudioOutputStream extends OutputStream implements LineListener {
    SourceDataLine line = null;
