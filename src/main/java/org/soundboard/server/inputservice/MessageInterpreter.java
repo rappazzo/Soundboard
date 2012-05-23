@@ -46,7 +46,7 @@ class MessageInterpreter extends Thread {
       this.start();
    }
 
-   public void run() {
+   @Override public void run() {
       String results = commandHandler.handleCommand(service, from, request.split("\\s"));
       if (results != null && !results.equals("")) {
          String[] textToSend = new String[] {results};

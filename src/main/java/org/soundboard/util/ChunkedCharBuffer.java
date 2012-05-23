@@ -1,15 +1,15 @@
 /***
- ** 
+ **
  ** This library is free software; you can redistribute it and/or
  ** modify it under the terms of the GNU Lesser General Public
  ** License as published by the Free Software Foundation; either
  ** version 2.1 of the License, or (at your option) any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful,
  ** but WITHOUT ANY WARRANTY; without even the implied warranty of
  ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  ** Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public
  ** License along with this library; if not, write to the Free Software
  ** Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -119,7 +119,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
     * the toString() method o(n StringBuffer shares the data array
     * between the string and the buffer, and the append(String)
     * method on this buffer, copies directly from the String array
-    * into the buffer arrays without an extra copy 
+    * into the buffer arrays without an extra copy
     */
    public ChunkedCharBuffer append(StringBuffer buf) {
       if (buf != null) {
@@ -144,7 +144,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
             buf.get(chunks[lastChunk], firstFree, available);
             remaining -= available;
             firstFree += available;
-         }         
+         }
       }
       return this;
    }
@@ -224,7 +224,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
          int available = 0;
          while (charsRead != -1) {
             available = ensureCapacity();
-            charsRead = reader.read(chunks[lastChunk], firstFree, available);            
+            charsRead = reader.read(chunks[lastChunk], firstFree, available);
             if (charsRead > 0) {
                firstFree += charsRead;
             }
@@ -253,7 +253,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
     * @deprecated no support for unicode characters - do not use this
     * Convenience method to read all of the contents of the byte array into the buffer
     */
-   public ChunkedCharBuffer append(byte[] bytes) {
+   @Deprecated public ChunkedCharBuffer append(byte[] bytes) {
       if (bytes != null) {
          return append(bytes, 0, bytes.length);
       } else {
@@ -265,7 +265,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
     * @deprecated no support for unicode characters - do not use this
     * Read the contents of the byte array into the buffer
     */
-   public ChunkedCharBuffer append(byte[] bytes, int offset, int len) {
+   @Deprecated public ChunkedCharBuffer append(byte[] bytes, int offset, int len) {
       if (bytes != null) {
          try {
             return append(new InputStreamReader(new ByteArrayInputStream(bytes, offset, len), charsetName));
@@ -387,11 +387,11 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
             return buffer.subSequence(start + subStart, start + subEnd);
          }
 
-         public String toString() {
+         @Override public String toString() {
             return buffer.substring(start, end);
          }
 
-         public int hashCode() {
+         @Override public int hashCode() {
             int h = hash;
             //hashcode following the style of String
             if (h == 0) {
@@ -404,7 +404,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
             return h;
          }
 
-         public boolean equals(Object obj) {
+         @Override public boolean equals(Object obj) {
             if (this == obj) {
                return true;
             }
@@ -433,7 +433,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
    /**
     * Create a new string from the entire chunked buffer
     */
-   public String toString() {
+   @Override public String toString() {
       int length = length();
       return fillStringBuffer(new StringBuffer(length), 0, 0, length).toString();
    }
@@ -530,7 +530,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
             }
          }
 
-         public int read() throws IOException {
+         @Override public int read() throws IOException {
             ensureOpen();
             //already reached end-of-stream
             if (eos) {
@@ -548,11 +548,11 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
             return cbuf[0] & 0xff;
          }
 
-         public int read(char cbuf[]) throws IOException {
+         @Override public int read(char cbuf[]) throws IOException {
             return read(cbuf, 0, cbuf.length);
          }
 
-         public int read(char cbuf[], int off, int len) throws IOException {
+         @Override public int read(char cbuf[], int off, int len) throws IOException {
             ensureOpen();
             //already reached end-of-stream
             if (eos) {
@@ -570,38 +570,29 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
             return len;
          }
 
-         public boolean ready() throws IOException {
+         @Override public boolean ready() throws IOException {
             ensureOpen();
             return true;
          }
 
-         public void close() throws IOException {
+         @Override public void close() throws IOException {
             ensureOpen();
             closed = true;
          }
 
-         public void reset() throws IOException {
+         @Override public void reset() throws IOException {
             ensureOpen();
             index = marked;
             eos = false;
          }
 
-         public void mark(int readAheadLimit) throws IOException {
+         @Override public void mark(int readAheadLimit) throws IOException {
             ensureOpen();
             marked = index;
          }
 
-         public boolean markSupported() {
+         @Override  public boolean markSupported() {
             return true;
-         }
-
-         public long skip(int ns) {
-            if (index >= endIndex) { 
-               return 0;
-            }
-            long n = Math.min(endIndex - index, ns);
-            index += n;
-            return n;
          }
 
       };
@@ -623,27 +614,27 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
       return new Writer(this) {
          boolean closed = false;
          
-         public void write(int c) throws IOException {
+         @Override public void write(int c) throws IOException {
             ensureOpen();
             super.write(c);
-         }         
+         }
 
-         public void write(char cbuf[], int off, int len) throws IOException {
+         @Override public void write(char cbuf[], int off, int len) throws IOException {
             ensureOpen();
             ChunkedCharBuffer.this.append(cbuf, off, len);
          }
 
-         public void write(String str, int off, int len) throws IOException {
+         @Override public void write(String str, int off, int len) throws IOException {
             ensureOpen();
             ChunkedCharBuffer.this.append(str, off, len);
          }
 
-         public void close() throws IOException {
+         @Override  public void close() throws IOException {
             closed = true;
          }
          
-         public void flush() throws IOException {
-            //no-op   
+         @Override  public void flush() throws IOException {
+            //no-op
          }
          
          private void ensureOpen() throws IOException {
@@ -667,9 +658,9 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
     */
    public ChunkedByteBuffer toChunkedByteBuffer(Charset charset) throws CharacterCodingException, UnsupportedEncodingException {
       //configure the encoder the way that string encoder does
-      CharsetEncoder encoder = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE);      
-      float avgBytesPerChar = encoder.averageBytesPerChar(); 
-      ChunkedByteBuffer cbb = new ChunkedByteBuffer((int)(chunkSize * avgBytesPerChar), chunks.length); 
+      CharsetEncoder encoder = charset.newEncoder().onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE);
+      float avgBytesPerChar = encoder.averageBytesPerChar();
+      ChunkedByteBuffer cbb = new ChunkedByteBuffer((int)(chunkSize * avgBytesPerChar), chunks.length);
       cbb.setCharset(charset);
 
       int length = length();
@@ -678,12 +669,12 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
 
       //encoding per char array chunk is much faster than the CharSequence interface to CharBuffer
       for (int i = 0; i < stopChunk; i++) {
-         ByteBuffer bb = encoder.encode(CharBuffer.wrap(chunks[i], 0, chunkSize)); 
-         cbb.append(bb); 
+         ByteBuffer bb = encoder.encode(CharBuffer.wrap(chunks[i], 0, chunkSize));
+         cbb.append(bb);
       }
       if (stopColumn > 0) {
-         ByteBuffer bb = encoder.encode(CharBuffer.wrap(chunks[stopChunk], 0, stopColumn)); 
-         cbb.append(bb); 
+         ByteBuffer bb = encoder.encode(CharBuffer.wrap(chunks[stopChunk], 0, stopColumn));
+         cbb.append(bb);
       }
       return cbb;
 
@@ -691,7 +682,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
 
    /**
     * Create a copy of the current data converted to a ChunkedByteBuffer, this
-    * method defaults to using UTF8 for the character decoding 
+    * method defaults to using UTF8 for the character decoding
     */
    public ChunkedByteBuffer toChunkedByteBuffer() throws CharacterCodingException, UnsupportedEncodingException {
       return toChunkedByteBuffer(Charset.forName(charsetName));
@@ -1020,7 +1011,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
    /**
     * Valid implmentation of the .equals method for ChunkedCharBuffer
     */
-   public boolean equals(Object obj) {
+   @Override public boolean equals(Object obj) {
       if (this == obj) {
          return true;
       }
@@ -1058,10 +1049,10 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
    /**
     * Fill the dest array with content from the buffer
     * @param srcBegin start index (inclusive) in the buffer
-    * @param srcEnd end index (exclusive) in the buffer 
+    * @param srcEnd end index (exclusive) in the buffer
     * @param dest the array to fill
     * @param destBegin start index in the destination array
-    * @throws ArrayIndexOutOfBounds exception if the dest array cannot hold the requested data 
+    * @throws ArrayIndexOutOfBounds exception if the dest array cannot hold the requested data
     */
    public void getChars(int srcBegin, int srcEnd, char[] dest, int destBegin) throws ArrayIndexOutOfBoundsException {
       if (srcBegin < 0) {
@@ -1098,7 +1089,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
     * @deprecated
     * Get the characters a bytes using this charset specified in this ChunkedCharBuffer
     */
-   public byte[] getBytes() throws UnsupportedEncodingException {
+   @Deprecated public byte[] getBytes() throws UnsupportedEncodingException {
       return toString().getBytes(charsetName);
    }
 

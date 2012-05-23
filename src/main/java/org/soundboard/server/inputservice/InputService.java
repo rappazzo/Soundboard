@@ -17,7 +17,6 @@
  **/
 package org.soundboard.server.inputservice;
 
-import java.util.*;
 import org.soundboard.server.*;
 
 public abstract class InputService extends Thread implements Stoppable {

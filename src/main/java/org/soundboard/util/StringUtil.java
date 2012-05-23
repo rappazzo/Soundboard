@@ -1,15 +1,15 @@
 /***
- ** 
+ **
  ** This library is free software; you can redistribute it and/or
  ** modify it under the terms of the GNU Lesser General Public
  ** License as published by the Free Software Foundation; either
  ** version 2.1 of the License, or (at your option) any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful,
  ** but WITHOUT ANY WARRANTY; without even the implied warranty of
  ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  ** Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public
  ** License along with this library; if not, write to the Free Software
  ** Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -28,8 +28,8 @@ public class StringUtil {
    private static final long MINUTE = 60 * SECOND;
    private static final long HOUR = 60 * MINUTE;
    private static final long DAY = 24 * HOUR;
-   private static final long WEEK = 7 * DAY;
-   private static final long BIWEEK = 2 * WEEK;
+//   private static final long WEEK = 7 * DAY;
+//   private static final long BIWEEK = 2 * WEEK;
 
    public static final String EMPTY_STRING = "";
 
@@ -209,8 +209,8 @@ public class StringUtil {
    }
 
    /**
-    * Construct a Date object from this string formatted 
-    * in 'yyyy-MM-dd hh:mm:ss.sss zzz' format to represent this 
+    * Construct a Date object from this string formatted
+    * in 'yyyy-MM-dd hh:mm:ss.sss zzz' format to represent this
     * (other date delimiters allowed: -, /, +, .)
     */
    public static Calendar parseDate(String dateString) throws ParseException {
@@ -244,7 +244,7 @@ public class StringUtil {
          Integer month = null;
          Integer day = null;
          try {
-            //if the first token is 4 digits, assume it is YEAR-MONTH-DAY, otherwise assume it is MONTH-DAY-YEAR 
+            //if the first token is 4 digits, assume it is YEAR-MONTH-DAY, otherwise assume it is MONTH-DAY-YEAR
             //there doesn't seem to be an easy way to determine if the date is in the standard european format (DAY-MONTH-YEAR)
             String firstToken = datePart.nextToken();
             if (firstToken.length() == 4) {
@@ -268,7 +268,7 @@ public class StringUtil {
          date.set(Calendar.MONTH, month.intValue() - 1);
          date.set(Calendar.DAY_OF_MONTH, day.intValue());
          if (!checkDate(date)) {
-            throw new ParseException("Date [" + dateSection + "] is out of the normal range", 0);            
+            throw new ParseException("Date [" + dateSection + "] is out of the normal range", 0);
          }
       }
       if (timeSection != null) {
@@ -292,7 +292,7 @@ public class StringUtil {
          date.set(Calendar.MINUTE, minute.intValue());
          date.set(Calendar.SECOND, second.intValue());
          if (!checkTime(date)) {
-            throw new ParseException("Date [" + timeSection + "] is out of the normal range", 0);            
+            throw new ParseException("Date [" + timeSection + "] is out of the normal range", 0);
          }
       }
       return date;

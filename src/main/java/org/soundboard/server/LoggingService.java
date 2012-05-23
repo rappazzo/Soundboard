@@ -402,7 +402,6 @@ public class LoggingService implements Serializable {
                      }
                   } else {
                      for (Map.Entry<String, Set<User>> entry : subscribers.entrySet()) {
-                        String serviceName = entry.getKey();
                         Set<User> logToIds = entry.getValue();
                         if (logToIds != null && logToIds.size() > 0) {
                            for (User logToId : logToIds) {

@@ -22,9 +22,10 @@
  **/
 package org.soundboard.audio;
 
-import javax.media.*;
-import java.io.File;
 import java.awt.*;
+import java.io.*;
+import javax.media.*;
+import javax.sound.sampled.*;
 
 public class TrivialJMFPlayer extends Frame {
 
@@ -39,13 +40,57 @@ public class TrivialJMFPlayer extends Frame {
       }
    }
 
-   public TrivialJMFPlayer() throws java.io.IOException, java.net.MalformedURLException, javax.media.MediaException {
+   public TrivialJMFPlayer() throws Exception {
       FileDialog fd = new FileDialog(this, "TrivialJMFPlayer", FileDialog.LOAD);
       fd.setVisible(true);
-      File f = new File(fd.getDirectory(), fd.getFile());
-      Player p = Manager.createRealizedPlayer(f.toURI().toURL());
+      File file = new File(fd.getDirectory(), fd.getFile());
+
+      AudioInputStream in = AudioSystem.getAudioInputStream(file);
+      AudioInputStream din = null;
+      AudioFormat baseFormat = in.getFormat();
+      AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
+      din = AudioSystem.getAudioInputStream(decodedFormat, in);
+      // Play now.
+      rawplay(decodedFormat, din);
+      in.close();
+      Player p = Manager.createRealizedPlayer(file.toURI().toURL());
       Component c = p.getVisualComponent();
       add(c);
       p.start();
    }
+   
+   private void rawplay(AudioFormat targetFormat, AudioInputStream din) throws IOException,                                                                                                LineUnavailableException
+   {
+     byte[] data = new byte[4096];
+     SourceDataLine line = getLine(targetFormat);
+     if (line != null)
+     {
+       // Start
+       line.start();
+       int nBytesRead = 0;
+       int nBytesWritten = 0;
+       while (nBytesRead != -1) {
+           nBytesRead = din.read(data, 0, data.length);
+           if (nBytesRead != -1) {
+              nBytesWritten = line.write(data, 0, nBytesRead);
+           }
+       }
+       if (nBytesWritten == 0) {}
+       // Stop
+       line.drain();
+       line.stop();
+       line.close();
+       din.close();
+     }
+   }
+
+   private SourceDataLine getLine(AudioFormat audioFormat) throws LineUnavailableException
+   {
+     SourceDataLine res = null;
+     DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+     res = (SourceDataLine) AudioSystem.getLine(info);
+     res.open(audioFormat);
+     return res;
+   }
+   
 }

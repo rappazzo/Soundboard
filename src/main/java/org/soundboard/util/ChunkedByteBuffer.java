@@ -20,7 +20,6 @@ package org.soundboard.util;
 import java.io.*;
 import java.nio.*;
 import java.nio.charset.*;
-import sun.io.*;
 
 public class ChunkedByteBuffer implements Serializable {
 
@@ -520,7 +519,6 @@ public class ChunkedByteBuffer implements Serializable {
     * byte buffer, depending on the ByteToChar conversion used
     * 
     * @param enc  The name of a supported character encoding
-    * @see ByteToCharConverter
     */
    public ChunkedCharBuffer toChunkedCharBuffer(String enc) throws UnsupportedEncodingException {
       return toChunkedCharBuffer(Charset.forName(enc));
@@ -532,7 +530,6 @@ public class ChunkedByteBuffer implements Serializable {
     * byte buffer, depending on the ByteToChar conversion used
     * 
     * @param charset  The name of a supported character encoding
-    * @see ByteToCharConverter
     */
    public ChunkedCharBuffer toChunkedCharBuffer(Charset charset) throws UnsupportedEncodingException {
       try {
@@ -553,7 +550,6 @@ public class ChunkedByteBuffer implements Serializable {
     * byte buffer, depending on the ByteToChar conversion used
     * 
     * This method uses the default charset for this ChunkedByteBuffer
-    * @see ByteToCharConverter
     */
    public ChunkedCharBuffer toChunkedCharBuffer() {
       try {
@@ -565,9 +561,7 @@ public class ChunkedByteBuffer implements Serializable {
    
    /**
     * Return a String representation of the byte buffer using the specified byte encoding
-    * 
     * @param enc  The name of a supported character encoding
-    * @see ByteToCharConverter
     */
    public String toString(String enc) throws UnsupportedEncodingException {
       return toChunkedCharBuffer(enc).toString();
@@ -576,8 +570,6 @@ public class ChunkedByteBuffer implements Serializable {
    /**
     * Return a String representation of the byte buffer using the default byte-to-char
     * converter specified from ByteToCharConverter.getDefault()
-    * 
-    * @see ByteToCharConverter
     */
    @Override public String toString() {
       return toChunkedCharBuffer().toString();

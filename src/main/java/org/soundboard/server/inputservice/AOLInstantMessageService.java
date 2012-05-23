@@ -17,10 +17,7 @@
  **/
 package org.soundboard.server.inputservice;
 
-import java.util.*;
-import java.util.regex.*;
 import org.soundboard.server.*;
-import org.soundboard.server.command.*;
 import com.levelonelabs.aim.*;
 
 public class AOLInstantMessageService extends InputService implements Runnable, Stoppable {

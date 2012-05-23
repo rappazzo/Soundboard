@@ -63,7 +63,6 @@ public class Server implements Stoppable {
     */
    public Mixer getAudioPlaybackDevice(String deviceName) {
       Mixer.Info[] mixerInfoData = AudioSystem.getMixerInfo();
-      ChunkedByteBuffer test = new ChunkedByteBuffer();
       try {
          AudioFormat testFormat = new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, (float)11025.0, 8, 1, 1, (float)11025.0, false);
          DataLine.Info info = new DataLine.Info(SourceDataLine.class, testFormat);

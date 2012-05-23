@@ -1143,11 +1143,11 @@ public class AIMClient implements Runnable, AIMSender {
                 int evilAmount = Integer.parseInt(inToken.nextToken());
                 aimbud.setWarningAmount(evilAmount);
                 if (stat.equals("T")) { // See whether user is available.
-                    String signOnTime = inToken.nextToken();
+                    inToken.nextToken();
 
                     // TODO: what is the format of this?
                     // System.err.println(bname+" signon="+signOnTime);
-                    String idleTime = inToken.nextToken();
+                    inToken.nextToken();
                     // System.err.println(bname+"
                     // idle="+Integer.valueOf(idleTime).intValue()+" mins");
                     if (-1 != inToken.nextToken().indexOf('U')) {
@@ -1489,7 +1489,7 @@ public class AIMClient implements Runnable, AIMSender {
         /**
          * Main processing method for the AimConnectionCheck object
          */
-        public void run() {
+        @Override public void run() {
             try {
                 if (sender) {
                     aim.connectionVerified = false;

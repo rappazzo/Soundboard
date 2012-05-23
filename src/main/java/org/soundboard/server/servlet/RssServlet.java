@@ -20,7 +20,6 @@ package org.soundboard.server.servlet;
 import java.io.*;
 import java.net.*;
 import javax.servlet.http.*;
-import org.soundboard.exception.*;
 import org.soundboard.server.*;
 import org.soundboard.util.*;
 
@@ -64,7 +63,6 @@ public class RssServlet extends BaseServlet {
          rssItems.append(history.toRssItem());
       }
       try {
-         Writer writer = new PrintWriter(outStream);
          if (rssItems.length() > 0) {
             ChunkedByteBuffer feed = new ChunkedByteBuffer();
             feed.append(String.format(RSS_TEMPLATE, "http://soundboard/", rssItems.toString()).getBytes());

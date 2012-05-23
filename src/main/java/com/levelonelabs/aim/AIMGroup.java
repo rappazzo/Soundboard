@@ -131,7 +131,7 @@ public class AIMGroup implements XMLizable {
      *
      * @return string of space separated buddy names
      */
-    public String toString() {
+    @Override public String toString() {
         StringBuffer sb=new StringBuffer();
         for(ListIterator<String> it=this.buddies.listIterator(); it.hasNext();) {
             sb.append(it.next()+" ");

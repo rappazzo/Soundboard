@@ -20,11 +20,8 @@ package org.soundboard.server.inputservice;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import org.soundboard.*;
 import org.soundboard.server.*;
 import org.soundboard.server.command.*;
-import org.soundboard.util.*;
-import com.levelonelabs.aim.*;
 
 public class TelnetService extends InputService {
 

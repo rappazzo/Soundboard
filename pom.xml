@@ -33,6 +33,21 @@
          <artifactId>smack</artifactId>
          <version>3.1.0</version>
       </dependency>
+      <dependency>
+      	<groupId>net.javazoom</groupId>
+      	<artifactId>jlayer</artifactId>
+      	<version>1.0.1</version>
+      </dependency>
+      <dependency>
+      	<groupId>net.javazoom</groupId>
+      	<artifactId>mp3spi</artifactId>
+      	<version>1.9.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.tritonus</groupId>
+        <artifactId>tritonus_share</artifactId>
+        <version>0.3.6</version>
+      </dependency>
    </dependencies>
    <build>
       <plugins>
