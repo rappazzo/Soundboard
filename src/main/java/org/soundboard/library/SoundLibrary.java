@@ -19,6 +19,7 @@ package org.soundboard.library;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.*;
 import javax.sound.sampled.*;
 import org.soundboard.audio.*;
@@ -37,7 +38,8 @@ public class SoundLibrary {
    private String libraryName;
    private boolean logAdditions = false;
    
-   private ActiveLibrary activeLibrary = null;
+   private Future activeLibrary = null;
+   private static ExecutorService LIBRARY_THREAD_POOL = Executors.newCachedThreadPool(new NamedThreadFactory("Active Library Listener", true));
    
    private SoundLibrary(String libraryName) {
       this.libraryName = libraryName;
@@ -91,8 +93,8 @@ public class SoundLibrary {
    public void registerListener(String dirname, boolean recurseSubdirectories, FilenameFilter filter) {
       listenToDirs.add(new DirectoryListeningData(new File(dirname), recurseSubdirectories, filter));
       
-      if (activeLibrary == null || !activeLibrary.isAlive()) {
-         activeLibrary = new ActiveLibrary();
+      if (activeLibrary == null || activeLibrary.isDone()) {
+         activeLibrary = LIBRARY_THREAD_POOL.submit(new ActiveLibrary());
       }
    }
    
@@ -257,19 +259,15 @@ public class SoundLibrary {
       }
    }
    
-   class ActiveLibrary extends Thread {
-      public ActiveLibrary() {
-         this.setName("Active Library Listener for " + libraryName);
-         this.start();
-      }
-      @Override
-      public void run() {
+   //TODO: try to use the OS file system to listen for changes
+   private class ActiveLibrary implements Runnable {
+      @Override public void run() {
          try {
             while (listenToDirs.size() > 0) {
                for (DirectoryListeningData data : listenToDirs) {
                   addDirectory(data.dir, data.recurse, data.filter);
                }
-               sleep(10000);
+               Thread.sleep(10000);
                logAdditions = true;
             }
          } catch (Exception e) {

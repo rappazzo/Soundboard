@@ -142,7 +142,7 @@ public class LoggingService implements Serializable {
       if (!isClient) {
          new OfflineWorker(
             new OfflineTask() {
-               public void doOfflineWork() {
+               @Override public void doOfflineWork() {
                   for (Map.Entry<String, Set<User>> entry : clients.entrySet()) {
                      Set<User> users = entry.getValue();
                      for (User user : users) {

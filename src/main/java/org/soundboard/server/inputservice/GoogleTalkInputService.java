@@ -17,9 +17,11 @@
  **/
 package org.soundboard.server.inputservice;
 
+import java.util.concurrent.*;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.*;
 import org.soundboard.server.*;
+import org.soundboard.util.*;
 
 public class GoogleTalkInputService extends InputService implements Runnable, Stoppable {
 
@@ -117,14 +119,14 @@ public class GoogleTalkInputService extends InputService implements Runnable, St
    /**
     * return if this is running
     */
-   public boolean isRunning() {
+   @Override public boolean isRunning() {
       return isLoggedIn;
    }
    
    /**
     * stop running
     */
-   public void stopRunning() {
+   @Override public void stopRunning() {
       logout();
    }
 
@@ -152,14 +154,15 @@ public class GoogleTalkInputService extends InputService implements Runnable, St
    public void loggedOut() {
       isLoggedIn = false;
    }
-   
+
+   private static ExecutorService POOL = Executors.newCachedThreadPool(new NamedThreadFactory(SERVICE_NAME + " Message Interpreter"));
    class Listener implements PacketListener {
       public Listener() {
       }
-      public void processPacket(Packet packet) {
+      @Override public void processPacket(Packet packet) {
          if (packet instanceof Message) {
              Message msg = (Message) packet;
-             new MessageInterpreter(GoogleTalkInputService.this, msg.getFrom(), msg.getBody());
+             POOL.submit(new MessageInterpreter(GoogleTalkInputService.this, msg.getFrom(), msg.getBody()));
          }
       }
    }

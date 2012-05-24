@@ -31,7 +31,7 @@ import org.soundboard.server.command.*;
  *
  *
  **/
-class MessageInterpreter extends Thread {
+class MessageInterpreter implements Runnable {
 
    private InputService service;
    private String from;
@@ -39,11 +39,9 @@ class MessageInterpreter extends Thread {
    private CommandHandler commandHandler = new CommandHandler();
 
    public MessageInterpreter(InputService service, String from, String request) {
-      this.setName(service.getServiceName() + " Message Interpreter");
       this.service = service;
       this.from = from;
       this.request = request;
-      this.start();
    }
 
    @Override public void run() {

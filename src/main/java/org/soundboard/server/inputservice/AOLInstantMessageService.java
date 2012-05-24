@@ -17,7 +17,9 @@
  **/
 package org.soundboard.server.inputservice;
 
+import java.util.concurrent.*;
 import org.soundboard.server.*;
+import org.soundboard.util.*;
 import com.levelonelabs.aim.*;
 
 public class AOLInstantMessageService extends InputService implements Runnable, Stoppable {
@@ -96,14 +98,14 @@ public class AOLInstantMessageService extends InputService implements Runnable, 
    /**
     * return if this is running
     */
-   public boolean isRunning() {
+   @Override public boolean isRunning() {
       return isLoggedIn;
    }
    
    /**
     * stop running
     */
-   public void stopRunning() {
+   @Override public void stopRunning() {
       logout();
    }
 
@@ -132,11 +134,12 @@ public class AOLInstantMessageService extends InputService implements Runnable, 
       isLoggedIn = false;
    }
    
+   private static ExecutorService POOL = Executors.newCachedThreadPool(new NamedThreadFactory(SERVICE_NAME + " Message Interpreter"));
    class Listener extends AIMAdapter {
       public Listener() {
       }
       @Override public void handleMessage(AIMBuddy buddy, String request) {
-         new MessageInterpreter(AOLInstantMessageService.this, buddy.getName(), request);
+         POOL.submit(new MessageInterpreter(AOLInstantMessageService.this, buddy.getName(), request));
       }
    }
 

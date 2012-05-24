@@ -63,7 +63,7 @@ public class AudioOutputStream extends OutputStream implements LineListener {
       super.close();
    }
    
-   public void update(LineEvent event) {
+   @Override public void update(LineEvent event) {
 //      LoggingService.serverLog(event.toString());      
    }
    

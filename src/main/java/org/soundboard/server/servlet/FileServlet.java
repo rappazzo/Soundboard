@@ -77,7 +77,7 @@ public class FileServlet extends BaseServlet {
          File fileToServe = new File(DOC_ROOT + docPath.toString());
          if (fileToServe.isDirectory()) {
             File[] listing = fileToServe.listFiles(new FilenameFilter() {
-               public boolean accept(File dir, String name) {
+               @Override public boolean accept(File dir, String name) {
                   boolean accepted = false;
                   for (String acceptedType : HTML_INDEX_FILES) {
                      accepted = name.equalsIgnoreCase(acceptedType);

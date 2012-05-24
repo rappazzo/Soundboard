@@ -69,7 +69,7 @@ public class NamedThreadFactory implements ThreadFactory {
       this.priority = priority;
    }
 
-   public Thread newThread(Runnable r) {
+   @Override public Thread newThread(Runnable r) {
       Thread t = new Thread(group, r, namePrefix + "[" + threadNumber.getAndIncrement() + "]", 0);
       if (t.isDaemon() != daemon) {
          t.setDaemon(daemon);

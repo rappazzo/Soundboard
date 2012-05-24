@@ -43,11 +43,11 @@ public class Server implements Stoppable {
       mainThread.setName("Server");
    }
    
-   public boolean isRunning() {
+   @Override public boolean isRunning() {
       return running;
    }
    
-   public void stopRunning() {
+   @Override public void stopRunning() {
       running = false;
    }
    

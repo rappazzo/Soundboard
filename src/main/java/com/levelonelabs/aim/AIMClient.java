@@ -292,7 +292,7 @@ public class AIMClient implements Runnable, AIMSender {
      * @param buddyName
      * @return The buddy
      */
-    public AIMBuddy getBuddy(String buddyName) {
+    @Override public AIMBuddy getBuddy(String buddyName) {
         return buddyHash.get(imNormalize(buddyName));
     }
 
@@ -302,7 +302,7 @@ public class AIMClient implements Runnable, AIMSender {
      * 
      * @return iterator
      */
-    public Iterator<Object> getBuddyNames() {
+    @Override public Iterator<Object> getBuddyNames() {
         return Arrays.asList(buddyHash.keySet().toArray()).iterator();
     }
 
@@ -310,7 +310,7 @@ public class AIMClient implements Runnable, AIMSender {
     /**
      * Sign on to aim server
      */
-    public void signOn() {
+    @Override public void signOn() {
         new Thread(this).start();
 
         // check the connection
@@ -341,7 +341,7 @@ public class AIMClient implements Runnable, AIMSender {
     /**
      * Sign off from aim server
      */
-    public void signOff() {
+    @Override public void signOff() {
         // cancel the ping until signon is called again
         watchdogCheck.cancel();
         watchdogVerify.cancel();
@@ -352,7 +352,7 @@ public class AIMClient implements Runnable, AIMSender {
     /**
      * Main processing method for the AIMClient object
      */
-    public void run() {
+    @Override public void run() {
         int length;
         seqNo = (int) Math.floor(Math.random() * 65535.0);
 
@@ -488,7 +488,7 @@ public class AIMClient implements Runnable, AIMSender {
      * @param listener
      *            The listener
      */
-    public void addAIMListener(AIMListener listener) {
+    @Override public void addAIMListener(AIMListener listener) {
         aimListeners.add(listener);
     }
 
@@ -499,7 +499,7 @@ public class AIMClient implements Runnable, AIMSender {
      * @param buddy
      * @param text
      */
-    public void sendMessage(AIMBuddy buddy, String text) {
+    @Override public void sendMessage(AIMBuddy buddy, String text) {
         if ((buddy == null) || buddy.isBanned()) {
             return;
         }
@@ -550,7 +550,7 @@ public class AIMClient implements Runnable, AIMSender {
      * @param buddy
      *            The buddy to add
      */
-    public void addBuddy(AIMBuddy buddy) {
+    @Override public void addBuddy(AIMBuddy buddy) {
         if (buddy == null) {
             return;
         }
@@ -580,7 +580,7 @@ public class AIMClient implements Runnable, AIMSender {
      * @param buddyList
      *            List of AIMBuddy
      */
-    public void addBuddies(List<AIMBuddy> buddyList) {
+    @Override public void addBuddies(List<AIMBuddy> buddyList) {
         // make a list of buddys for each "group"
         Map<String, List<AIMBuddy>> groupMap = createGroupMap(buddyList);
 
@@ -657,7 +657,7 @@ public class AIMClient implements Runnable, AIMSender {
      * @param buddy
      *            The buddy to add
      */
-    public void removeBuddy(AIMBuddy buddy) {
+    @Override public void removeBuddy(AIMBuddy buddy) {
         if (buddy == null) {
             return;
         }
@@ -687,7 +687,7 @@ public class AIMClient implements Runnable, AIMSender {
      * @param buddyList
      *            List of AIMBuddy
      */
-    public void removeBuddies(List<AIMBuddy> buddyList) {
+    @Override public void removeBuddies(List<AIMBuddy> buddyList) {
         // make a list of buddys for each "group"
         Map<String, List<AIMBuddy>> groupMap = createGroupMap(buddyList);
 
@@ -730,7 +730,7 @@ public class AIMClient implements Runnable, AIMSender {
      * 
      * @param buddy
      */
-    public void sendWarning(AIMBuddy buddy) {
+    @Override public void sendWarning(AIMBuddy buddy) {
         if (buddy == null) {
             return;
         }
@@ -754,7 +754,7 @@ public class AIMClient implements Runnable, AIMSender {
      * 
      * @param buddy
      */
-    public void banBuddy(AIMBuddy buddy) {
+    @Override public void banBuddy(AIMBuddy buddy) {
         if ((buddy == null) || (buddy.getName().length() == 0)) {
             return;
         }
@@ -1382,7 +1382,7 @@ public class AIMClient implements Runnable, AIMSender {
      * 
      * @param buddy
      */
-    public void denyBuddy(AIMBuddy buddy) {
+    @Override public void denyBuddy(AIMBuddy buddy) {
         String bname = imNormalize(buddy.getName());
         permitted.remove(bname);
         denied.add(bname);
@@ -1395,7 +1395,7 @@ public class AIMClient implements Runnable, AIMSender {
      * 
      * @param buddy
      */
-    public void permitBuddy(AIMBuddy buddy) {
+    @Override public void permitBuddy(AIMBuddy buddy) {
         String bname = imNormalize(buddy.getName());
         denied.remove(bname);
         permitted.add(bname);
@@ -1408,7 +1408,7 @@ public class AIMClient implements Runnable, AIMSender {
      * 
      * @return int representation (see public statics) of current permit mode.
      */
-    public int getPermitMode() {
+    @Override public int getPermitMode() {
         return permitMode;
     }
 
@@ -1418,7 +1418,7 @@ public class AIMClient implements Runnable, AIMSender {
      * 
      * @param mode
      */
-    public void setPermitMode(int mode) {
+    @Override public void setPermitMode(int mode) {
         if (mode < 1 || mode > 5) {
             logger.info("Invalid permit mode, ignoring:" + mode);
             return;
@@ -1444,7 +1444,7 @@ public class AIMClient implements Runnable, AIMSender {
     /**
      * Clear unvailable message
      */
-    public void setAvailable() {
+    @Override public void setAvailable() {
         sendAway("");
     }
 
@@ -1454,7 +1454,7 @@ public class AIMClient implements Runnable, AIMSender {
      * 
      * @param reason
      */
-    public void setUnavailable(String reason) {
+    @Override public void setUnavailable(String reason) {
         sendAway(reason);
     }
 

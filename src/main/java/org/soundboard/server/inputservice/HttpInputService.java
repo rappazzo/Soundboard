@@ -20,6 +20,7 @@ package org.soundboard.server.inputservice;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.*;
 import javax.servlet.http.*;
 import org.soundboard.server.*;
 import org.soundboard.server.command.*;
@@ -31,13 +32,14 @@ public class HttpInputService extends InputService {
    public static final String SERVICE_NAME = "http";
    public static final String PORT = "port";
    public static final String MAX_CONNECTIONS = "maxConnections";
+   
+   private static ExecutorService WORKER_POOL = null;
 
    static final byte[] EOL = {(byte)'\r', (byte)'\n'};
 
    protected int port = 80;
-   protected int maxConnections = 5;
-   protected static boolean running = true;
-   private List<Worker> workerThreads = new ArrayList<Worker>();
+   private int maxConnections;
+   
    
    private List<Servlet> servlets = new ArrayList<Servlet>();
    private Servlet defaultServlet = new BaseServlet() {
@@ -95,7 +97,11 @@ public class HttpInputService extends InputService {
          port = configPort.intValue();
          servlets.add(new RssServlet());
       }
-      maxConnections = Math.max(maxConnections, SoundboardConfiguration.config().getIntProperty(SoundboardConfiguration.INPUT, getServiceName(), MAX_CONNECTIONS));
+      maxConnections = Math.max(5, SoundboardConfiguration.config().getIntProperty(SoundboardConfiguration.INPUT, getServiceName(), MAX_CONNECTIONS));
+      WORKER_POOL = new ThreadPoolExecutor(0, maxConnections,
+            60L, TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>(),
+            new NamedThreadFactory("HttpListener", true));
       return port > 0;
    }
 
@@ -105,16 +111,16 @@ public class HttpInputService extends InputService {
       //NOT IMPLEMENTED
    }
 
-   public boolean isRunning() {
-      return running;
+   @Override public boolean isRunning() {
+      return WORKER_POOL.isTerminated();
    }
 
-   public void stopRunning() {
-      running = false;
-      synchronized (workerThreads) {
-         for (Worker worker : workerThreads) {
-            worker.interrupt();
-         }
+   @Override public void stopRunning() {
+      try {
+         WORKER_POOL.shutdownNow();
+         WORKER_POOL.awaitTermination(5, TimeUnit.SECONDS);
+      } catch (InterruptedException e) {
+         //ahh!!
       }
    }
 
@@ -126,49 +132,26 @@ public class HttpInputService extends InputService {
 
    @Override public void run() {
       try {
-         for (int i = 0; i < maxConnections; ++i) {
-            Worker worker = new Worker();
-            worker.setName("Http Worker #" + i);
-            worker.start();
-            workerThreads.add(worker);
-         }
          ServerSocket ss = new ServerSocket(port);
          while (isRunning()) {
             Socket s = ss.accept();
-            Worker w = null;
-            synchronized (workerThreads) {
-               if (workerThreads.isEmpty()) {
-                  Worker ws = new Worker();
-                  ws.setName("Additional Http Worker");
-                  ws.setSocket(s);
-                  ws.start();
-               } else {
-                  w = workerThreads.get(0);
-                  workerThreads.remove(0);
-                  w.setSocket(s);
-               }
-            }
+            WORKER_POOL.submit(new Worker(s));
          }
       } catch (IOException e) {
          LoggingService.getInstance().serverLog(e);
       }
    }
 
-   class Worker extends Thread {
+   class Worker implements Runnable {
       final static int BUF_SIZE = 2048;
 
       private Socket listener;
 
-      private Worker() {
-         listener = null;
+      private Worker(Socket s) {
+         listener = s;
       }
 
-      synchronized void setSocket(Socket s) {
-         this.listener = s;
-         notify();
-      }
-
-      @Override public synchronized void run() {
+      @Override public void run() {
          while (isRunning()) {
             if (listener == null) {
                try {
@@ -181,18 +164,6 @@ public class HttpInputService extends InputService {
                handleClient();
             } catch (Exception e) {
                LoggingService.getInstance().serverLog(e);
-            }
-            /* go back in wait queue if there's fewer
-             * than numHandler connections.
-             */
-            listener = null;
-            synchronized (workerThreads) {
-               if (workerThreads.size() >= maxConnections) {
-                  /* too many threads, exit this one */
-                  return;
-               } else {
-                  workerThreads.add(this);
-               }
             }
          }
       }

@@ -53,7 +53,7 @@ public class BaseServlet implements Servlet {
    /**
     * this servlet accepts requests of the form "/servletAcceptKey/relayerType"
     */
-   public boolean accept(HttpServletRequest servletRequest, Socket httpConnection) {
+   @Override public boolean accept(HttpServletRequest servletRequest, Socket httpConnection) {
       if (servletRequest != null ) {
          String uri = servletRequest.getRequestURI();
          String[] uriParts = uri.substring(1).split("[/\\ ]+");
@@ -70,7 +70,7 @@ public class BaseServlet implements Servlet {
       return false;
    }
    
-   public void handle(HttpServletRequest servletRequest, PrintStream outStream, Socket httpConnection) {
+   @Override public void handle(HttpServletRequest servletRequest, PrintStream outStream, Socket httpConnection) {
       LoggingService.getInstance().serverLog("From " + httpConnection.getInetAddress().getHostAddress() + ": " + servletRequest.getRequestURI());
       ChunkedByteBuffer responseContent = getResponseContents(servletRequest, httpConnection);
       try {

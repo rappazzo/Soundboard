@@ -197,28 +197,28 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getAuthType()
     */
-   public String getAuthType() {
+   @Override public String getAuthType() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getContextPath()
     */
-   public String getContextPath() {
+   @Override public String getContextPath() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getCookies()
     */
-   public Cookie[] getCookies() {
+   @Override public Cookie[] getCookies() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getDateHeader(java.lang.String)
     */
-   public long getDateHeader(String headerKey) {
+   @Override public long getDateHeader(String headerKey) {
       try {
          String header = getHeader(headerKey);
          try {
@@ -235,7 +235,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getHeader(java.lang.String)
     */
-   public String getHeader(String headerKey) {
+   @Override public String getHeader(String headerKey) {
       return headerMap.get(headerKey);
    }
 
@@ -249,14 +249,14 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getHeaderNames()
     */
-   public Enumeration getHeaderNames() {
+   @Override public Enumeration getHeaderNames() {
       return Collections.enumeration(headerMap.keySet());
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getHeaders(java.lang.String)
     */
-   public Enumeration getHeaders(String headerKey) {
+   @Override public Enumeration getHeaders(String headerKey) {
       String header = getHeader(headerKey);
       return Collections.enumeration(Arrays.asList(header.split(",")));
    }
@@ -264,7 +264,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getIntHeader(java.lang.String)
     */
-   public int getIntHeader(String headerKey) {
+   @Override public int getIntHeader(String headerKey) {
       try {
          return Integer.valueOf(getHeader(headerKey)).intValue();
       } catch (Exception e) {
@@ -275,161 +275,161 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getMethod()
     */
-   public String getMethod() {
+   @Override public String getMethod() {
       return method;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getPathInfo()
     */
-   public String getPathInfo() {
+   @Override public String getPathInfo() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getPathTranslated()
     */
-   public String getPathTranslated() {
+   @Override public String getPathTranslated() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getQueryString()
     */
-   public String getQueryString() {
+   @Override public String getQueryString() {
       return queryString;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getRemoteUser()
     */
-   public String getRemoteUser() {
+   @Override public String getRemoteUser() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getRequestURI()
     */
-   public String getRequestURI() {
+   @Override public String getRequestURI() {
       return requestedURI;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getRequestURL()
     */
-   public StringBuffer getRequestURL() {
+   @Override public StringBuffer getRequestURL() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getRequestedSessionId()
     */
-   public String getRequestedSessionId() {
+   @Override public String getRequestedSessionId() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getServletPath()
     */
-   public String getServletPath() {
+   @Override public String getServletPath() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getSession()
     */
-   public HttpSession getSession() {
+   @Override public HttpSession getSession() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getSession(boolean)
     */
-   public HttpSession getSession(boolean arg0) {
+   @Override public HttpSession getSession(boolean arg0) {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#getUserPrincipal()
     */
-   public Principal getUserPrincipal() {
+   @Override public Principal getUserPrincipal() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromCookie()
     */
-   public boolean isRequestedSessionIdFromCookie() {
+   @Override public boolean isRequestedSessionIdFromCookie() {
       return false;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromURL()
     */
-   public boolean isRequestedSessionIdFromURL() {
+   @Override public boolean isRequestedSessionIdFromURL() {
       return false;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromUrl()
     */
-   public boolean isRequestedSessionIdFromUrl() {
+   @Override public boolean isRequestedSessionIdFromUrl() {
       return false;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdValid()
     */
-   public boolean isRequestedSessionIdValid() {
+   @Override public boolean isRequestedSessionIdValid() {
       return false;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.http.HttpServletRequest#isUserInRole(java.lang.String)
     */
-   public boolean isUserInRole(String arg0) {
+   @Override public boolean isUserInRole(String arg0) {
       return false;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getAttribute(java.lang.String)
     */
-   public Object getAttribute(String arg0) {
+   @Override public Object getAttribute(String arg0) {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getAttributeNames()
     */
-   public Enumeration getAttributeNames() {
+   @Override public Enumeration getAttributeNames() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getCharacterEncoding()
     */
-   public String getCharacterEncoding() {
+   @Override public String getCharacterEncoding() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getContentLength()
     */
-   public int getContentLength() {
+   @Override public int getContentLength() {
       return 0;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getContentType()
     */
-   public String getContentType() {
+   @Override public String getContentType() {
       return contentType != null ? contentType : "text/html";
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getInputStream()
     */
-   public ServletInputStream getInputStream() throws IOException {
+   @Override public ServletInputStream getInputStream() throws IOException {
       return new ServletInputStream() {
          InputStream in = requestBytes.toInputStream();
 
@@ -446,21 +446,21 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getLocale()
     */
-   public Locale getLocale() {
+   @Override public Locale getLocale() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getLocales()
     */
-   public Enumeration getLocales() {
+   @Override public Enumeration getLocales() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
     */
-   public String getParameter(String key) {
+   @Override public String getParameter(String key) {
       String value = null;
       Collection<String> valueSet = parameterMap.get(key);
       if (valueSet != null && valueSet.size() > 0) {
@@ -472,21 +472,21 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getParameterMap()
     */
-   public Map getParameterMap() {
+   @Override public Map getParameterMap() {
       return parameterMap.asMap();
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getParameterNames()
     */
-   public Enumeration getParameterNames() {
+   @Override public Enumeration getParameterNames() {
       return Collections.enumeration(parameterMap.keySet());
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
     */
-   public String[] getParameterValues(String key) {
+   @Override public String[] getParameterValues(String key) {
       String[] values = null;
       Collection<String> valueSet = parameterMap.get(key);
       if (valueSet != null) {
@@ -498,107 +498,107 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getProtocol()
     */
-   public String getProtocol() {
+   @Override public String getProtocol() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getReader()
     */
-   public BufferedReader getReader() throws IOException {
+   @Override public BufferedReader getReader() throws IOException {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getRealPath(java.lang.String)
     */
-   public String getRealPath(String arg0) {
+   @Override public String getRealPath(String arg0) {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getRemoteAddr()
     */
-   public String getRemoteAddr() {
+   @Override public String getRemoteAddr() {
       return remoteAddress;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getRemoteHost()
     */
-   public String getRemoteHost() {
+   @Override public String getRemoteHost() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getRequestDispatcher(java.lang.String)
     */
-   public RequestDispatcher getRequestDispatcher(String arg0) {
+   @Override public RequestDispatcher getRequestDispatcher(String arg0) {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getScheme()
     */
-   public String getScheme() {
+   @Override public String getScheme() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getServerName()
     */
-   public String getServerName() {
+   @Override public String getServerName() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getServerPort()
     */
-   public int getServerPort() {
+   @Override public int getServerPort() {
       return 0;
    }
    
-   public String getLocalAddr() {
+   @Override public String getLocalAddr() {
       return null;
    }
    
-   public String getLocalName() {
+   @Override public String getLocalName() {
       return null;
    }
    
-   public int getLocalPort() {
+   @Override public int getLocalPort() {
       return 0;
    }
    
-   public int getRemotePort() {
+   @Override public int getRemotePort() {
       return 0;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#isSecure()
     */
-   public boolean isSecure() {
+   @Override public boolean isSecure() {
       return false;
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#removeAttribute(java.lang.String)
     */
-   public void removeAttribute(String arg0) {
+   @Override public void removeAttribute(String arg0) {
 
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#setAttribute(java.lang.String, java.lang.Object)
     */
-   public void setAttribute(String arg0, Object arg1) {
+   @Override public void setAttribute(String arg0, Object arg1) {
 
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#setCharacterEncoding(java.lang.String)
     */
-   public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
+   @Override public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
 
    }
 

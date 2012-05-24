@@ -43,11 +43,11 @@ public class CronService implements Stoppable {
       return instance;
    }
    
-   public boolean isRunning() {
+   @Override public boolean isRunning() {
       return isRunning;
    }
    
-   public void stopRunning() {
+   @Override public void stopRunning() {
       this.service.cancel();
       this.service.purge();
       this.service = new Timer();

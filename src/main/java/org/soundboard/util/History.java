@@ -40,7 +40,7 @@ public class History {
       final String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
       new OfflineWorker(
          new OfflineTask() {
-            public void doOfflineWork() {
+            @Override public void doOfflineWork() {
                synchronized(mutex) {
                   history.add(new HistoryEntry(who, now, command));
                   while (history.size() > MAX_LIVE_HISTORY_SIZE) {
@@ -63,7 +63,7 @@ public class History {
    
    public static Iterable<HistoryEntry> getHistory() {
       return new Iterable<HistoryEntry>() {
-         public Iterator iterator() {
+         @Override public Iterator iterator() {
             return Collections.unmodifiableList(history).iterator();
          }
       };

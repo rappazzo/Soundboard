@@ -127,11 +127,11 @@ public class Karma implements Stoppable {
       }
    }
    
-   public boolean isRunning() {
+   @Override public boolean isRunning() {
       return monitoring;
    }
    
-   public void stopRunning() {
+   @Override public void stopRunning() {
       if (this.monitor != null && monitoring) {
          monitoring = false;
          try {

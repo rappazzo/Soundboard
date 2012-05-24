@@ -81,7 +81,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
       return length();
    }
 
-   public int length() {
+   @Override public int length() {
       return (lastChunk * chunkSize) + firstFree;
    }
 
@@ -360,7 +360,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
     *      reflected in the sequence, and may damage the integrity of the
     *      sequence, for a copy of the buffer use substring
     */
-   public CharSequence subSequence(final int start, final int end) {
+   @Override public CharSequence subSequence(final int start, final int end) {
       final ChunkedCharBuffer buffer = this;
       if (start < 0) {
          throw new StringIndexOutOfBoundsException(start);
@@ -375,15 +375,15 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
       return new CharSequence() {
          private int hash = 0;
 
-         public int length() {
+         @Override public int length() {
             return end - start;
          }
 
-         public char charAt(int index) {
+         @Override public char charAt(int index) {
             return buffer.charAt(index + start);
          }
 
-         public CharSequence subSequence(int subStart, int subEnd) {
+         @Override public CharSequence subSequence(int subStart, int subEnd) {
             return buffer.subSequence(start + subStart, start + subEnd);
          }
 
@@ -455,7 +455,7 @@ public final class ChunkedCharBuffer implements CharSequence, Serializable {
       }
    }
 
-   public char charAt(int pos) {
+   @Override public char charAt(int pos) {
       if ((pos < 0) || (pos >= length())) {
          throw new StringIndexOutOfBoundsException(pos);
       }

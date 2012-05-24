@@ -25,7 +25,7 @@ public class DefaultNewConnectionHandler implements NewConnectionHandler {
    /**
     * do something when a new connection is established
     */
-   public void connectionEstablished(Socket session) {
+   @Override public void connectionEstablished(Socket session) {
       try {
          PrintStream out = new PrintStream(session.getOutputStream());
          out.println("Welcome to the Soundboard!!  Type 'help' for a list of commands.");

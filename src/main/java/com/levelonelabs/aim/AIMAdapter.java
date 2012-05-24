@@ -43,38 +43,38 @@ package com.levelonelabs.aim;
  */
 public class AIMAdapter implements AIMListener {
 
-    public void handleMessage(AIMBuddy buddy, String request) {
+    @Override public void handleMessage(AIMBuddy buddy, String request) {
     }
 
 
-    public void handleBuddySignOn(AIMBuddy buddy, String info) {
+    @Override public void handleBuddySignOn(AIMBuddy buddy, String info) {
     }
 
 
-    public void handleBuddySignOff(AIMBuddy buddy, String info) {
+    @Override public void handleBuddySignOff(AIMBuddy buddy, String info) {
     }
 
 
-    public void handleError(String error, String message) {
+    @Override public void handleError(String error, String message) {
     }
 
 
-    public void handleWarning(AIMBuddy buddy, int amount) {
+    @Override public void handleWarning(AIMBuddy buddy, int amount) {
     }
 
 
-	public void handleConnected() {
+	@Override public void handleConnected() {
 	}
 
 
-	public void handleDisconnected() {
-	}
-    
-
-	public void handleBuddyUnavailable(AIMBuddy aimbud, String message) {
+	@Override public void handleDisconnected() {
 	}
     
 
-	public void handleBuddyAvailable(AIMBuddy aimbud, String message) {
+	@Override public void handleBuddyUnavailable(AIMBuddy aimbud, String message) {
+	}
+    
+
+	@Override public void handleBuddyAvailable(AIMBuddy aimbud, String message) {
 	}
 }

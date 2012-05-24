@@ -88,11 +88,11 @@ public class TelnetService extends InputService {
       return (sessions.get(userName) != null);
    }
    
-   public boolean isRunning() {
+   @Override public boolean isRunning() {
       return running;
    }
    
-   public void stopRunning() {
+   @Override public void stopRunning() {
       running = false;
    }
       

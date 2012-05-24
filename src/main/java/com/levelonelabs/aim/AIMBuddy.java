@@ -240,7 +240,7 @@ public class AIMBuddy implements XMLizable {
     /**
      * @see com.levelonelabs.aim.XMLizable#readState(Element)
      */
-    public void readState(Element fullStateElement) {
+    @Override public void readState(Element fullStateElement) {
         // parse group
         String group = fullStateElement.getAttribute("group");
         if (group == null || group.trim().equals("")) {
@@ -296,7 +296,7 @@ public class AIMBuddy implements XMLizable {
     /**
      * @see com.levelonelabs.aim.XMLizable#writeState(Element)
      */
-    public void writeState(Element emptyStateElement) {
+    @Override public void writeState(Element emptyStateElement) {
         Document doc = emptyStateElement.getOwnerDocument();
         emptyStateElement.setAttribute("name", this.getName());
         emptyStateElement.setAttribute("group", this.getGroup());

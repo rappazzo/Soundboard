@@ -143,7 +143,7 @@ public class AIMGroup implements XMLizable {
     /**
      * @see com.levelonelabs.aim.XMLizable#readState(Element)
      */
-    public void readState(Element fullStateElement) {
+    @Override public void readState(Element fullStateElement) {
         buddies=new ArrayList<String>();
         NodeList list=fullStateElement.getElementsByTagName("buddy");
         for(int i=0; i < list.getLength(); i++) {
@@ -157,7 +157,7 @@ public class AIMGroup implements XMLizable {
     /**
      * @see com.levelonelabs.aim.XMLizable#writeState(Element)
      */
-    public void writeState(Element emptyStateElement) {
+    @Override public void writeState(Element emptyStateElement) {
         Document doc=emptyStateElement.getOwnerDocument();
         emptyStateElement.setAttribute("name", this.getName());
 

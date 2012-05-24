@@ -33,11 +33,11 @@ public abstract class TimeoutTimer extends Thread implements Stoppable {
       this.timeout = timeout;
    }
 
-   public final boolean isRunning() {
+   @Override public final boolean isRunning() {
       return running;
    }
 
-   public final void stopRunning() {
+   @Override public final void stopRunning() {
       running = false;
    }
 
