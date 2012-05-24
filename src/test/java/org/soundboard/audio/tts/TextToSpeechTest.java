@@ -17,13 +17,44 @@
  **/
 package org.soundboard.audio.tts;
 
+import javax.sound.sampled.*;
 import junit.framework.*;
-
+import org.soundboard.util.*;
 
 public class TextToSpeechTest extends TestCase {
-   
-   public void testNothing() {
-      
+
+   public void testNothing() throws Exception {
+      ChunkedByteBuffer speech = GoogleTTS.toSoundBytes("This is a test of the text to speech system.");
+
+      AudioInputStream in = AudioSystem.getAudioInputStream(speech.toInputStream());
+      AudioFormat baseFormat = in.getFormat();
+      AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
+      AudioInputStream din = AudioSystem.getAudioInputStream(decodedFormat, in);
+
+      byte[] data = new byte[4096];
+      SourceDataLine line = null;
+      DataLine.Info info = new DataLine.Info(SourceDataLine.class, decodedFormat);
+      line = (SourceDataLine)AudioSystem.getLine(info);
+      line.open(decodedFormat);
+      if (line != null) {
+         // Start
+         line.start();
+         int nBytesRead = 0;
+         int nBytesWritten = 0;
+         while (nBytesRead != -1) {
+            nBytesRead = din.read(data, 0, data.length);
+            if (nBytesRead != -1) {
+               nBytesWritten = line.write(data, 0, nBytesRead);
+            }
+         }
+         if (nBytesWritten == 0) {
+         }
+         // Stop
+         line.drain();
+         line.stop();
+         line.close();
+         din.close();
+      }
    }
-   
+
 }
