@@ -51,11 +51,10 @@ public class SayCommand extends Command {
       
       try {
          org.soundboard.audio.SoundPlayer sbPlayer = org.soundboard.audio.SoundPlayer.getInstance();
-         String playInfo = sbPlayer.play(GoogleTTS.toSoundBytes(sentence), sentence);
-         if (playInfo != null && !playInfo.equals("")) {
-            out.append(playInfo);
-            out.append("\n");
-         }
+         sbPlayer.play(GoogleTTS.toSoundBytes(sentence), sentence);
+         out.append("I said: ");
+         out.append(sentence);
+         out.append("\n");
       } catch (Exception e) {
          LoggingService.getInstance().serverLog("Error Saying \""+sentence+"\": "+ e.getMessage());
          LoggingService.getInstance().serverLog(e);

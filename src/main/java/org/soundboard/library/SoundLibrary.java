@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.*;
 import javax.sound.sampled.*;
-import org.soundboard.audio.*;
 import org.soundboard.audio.tts.*;
 import org.soundboard.server.*;
 import org.soundboard.util.*;
@@ -190,15 +189,14 @@ public class SoundLibrary {
                AudioInputStream audioStream = AudioSystem.getAudioInputStream(data.toInputStream());
                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioStream.getFormat());
                try {
-                  SoundPlayer.getInstance().getDevice().getLine(info);
-               } catch (NullPointerException e) {
-                  //ignore
-               }
-                  
-               library.put(shortName, data);
-               added = true;
-               if (logAdditions && added) {
-                  LoggingService.getInstance().log("Added '" + shortName + "' into library" + (!libraryName.equals(DEFAULT_LIBRARY) ? " " + libraryName : ""));
+                  AudioSystem.getLine(info);
+                  library.put(shortName, data);
+                  added = true;
+                  if (logAdditions && added) {
+                     LoggingService.getInstance().log("Added '" + shortName + "' into library" + (!libraryName.equals(DEFAULT_LIBRARY) ? " " + libraryName : ""));
+                  }
+               } catch (Exception e) {
+                  LoggingService.getInstance().log("NOT Added '" + shortName + "': "+e.getMessage());
                }
             }
          } catch (Exception e) {

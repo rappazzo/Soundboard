@@ -33,7 +33,7 @@ public class HttpInputService extends InputService {
    public static final String PORT = "port";
    public static final String MAX_CONNECTIONS = "maxConnections";
    
-   private static ExecutorService WORKER_POOL = null;
+   private static ThreadPoolExecutor WORKER_POOL = null;
 
    static final byte[] EOL = {(byte)'\r', (byte)'\n'};
 
@@ -97,6 +97,7 @@ public class HttpInputService extends InputService {
          port = configPort.intValue();
          servlets.add(new RssServlet());
       }
+      servlets.add(new FavIconServlet());
       maxConnections = Math.max(5, SoundboardConfiguration.config().getIntProperty(SoundboardConfiguration.INPUT, getServiceName(), MAX_CONNECTIONS));
       WORKER_POOL = new ThreadPoolExecutor(0, maxConnections,
             60L, TimeUnit.SECONDS,
@@ -112,7 +113,7 @@ public class HttpInputService extends InputService {
    }
 
    @Override public boolean isRunning() {
-      return WORKER_POOL.isTerminated();
+      return !WORKER_POOL.isTerminated();
    }
 
    @Override public void stopRunning() {
@@ -152,47 +153,31 @@ public class HttpInputService extends InputService {
       }
 
       @Override public void run() {
-         while (isRunning()) {
-            if (listener == null) {
-               try {
-                  wait(); //for a connection
-               } catch (InterruptedException e) {
-                  continue;
-               }
-            }
-            try {
-               handleClient();
-            } catch (Exception e) {
-               LoggingService.getInstance().serverLog(e);
-            }
-         }
-      }
-
-      void handleClient() throws IOException {
-         InputStream inStream = listener.getInputStream();
-         PrintStream outStream = new PrintStream(listener.getOutputStream());
-         /* we will only block in read for this many milliseconds
-          * before we fail with java.io.InterruptedIOException,
-          * at which point we will abandon the connection.
-          */
-         listener.setSoTimeout(0);
-         listener.setTcpNoDelay(true);
-         DefaultHttpServletRequest servletRequest = DefaultHttpServletRequest.create(inStream, listener.getInetAddress());
          try {
-            boolean servletRun = false;
-            for (Servlet servlet : servlets) {
-               if (servlet.accept(servletRequest, listener)) {
-                  servletRun = true;
-                  servlet.handle(servletRequest, outStream, listener);
-                  break;
+            if (!listener.isClosed()) {
+               InputStream inStream = listener.getInputStream();
+               PrintStream outStream = new PrintStream(listener.getOutputStream());
+               listener.setSoTimeout(0);
+               listener.setTcpNoDelay(true);
+               DefaultHttpServletRequest servletRequest = DefaultHttpServletRequest.create(inStream, listener.getInetAddress());
+               try {
+                  boolean servletRun = false;
+                  for (Servlet servlet : servlets) {
+                     if (servlet.accept(servletRequest, listener)) {
+                        servletRun = true;
+                        servlet.handle(servletRequest, outStream, listener);
+                        break;
+                     }
+                  }
+                  if (!servletRun && defaultServlet.accept(servletRequest, listener)) {
+                     defaultServlet.handle(servletRequest, outStream, listener);
+                  }
+               } finally {
+                  listener.close();
                }
             }
-            if (!servletRun) {
-               defaultServlet.accept(servletRequest, listener);
-               defaultServlet.handle(servletRequest, outStream, listener);
-            }
-         } finally {
-            listener.close();
+         } catch (Exception e) {
+            LoggingService.getInstance().serverLog(e);
          }
       }
 

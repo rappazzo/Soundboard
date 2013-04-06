@@ -1,15 +1,15 @@
 /***
- ** 
+ **
  ** This library is free software; you can redistribute it and/or
  ** modify it under the terms of the GNU Lesser General Public
  ** License as published by the Free Software Foundation; either
  ** version 2.1 of the License, or (at your option) any later version.
- ** 
+ **
  ** This library is distributed in the hope that it will be useful,
  ** but WITHOUT ANY WARRANTY; without even the implied warranty of
  ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  ** Lesser General Public License for more details.
- ** 
+ **
  ** You should have received a copy of the GNU Lesser General Public
  ** License along with this library; if not, write to the Free Software
  ** Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -107,7 +107,7 @@ public class SoundPlayer {
     * @return info text
     */
    public String play(String sound) {
-      return play(SoundLibrary.getInstance(), sound);      
+      return play(SoundLibrary.getInstance(), sound);
    }
    
    /**
@@ -127,8 +127,6 @@ public class SoundPlayer {
          try {
             if (sound != null) {
                stopped = false;
-               AudioFileFormat openStreamFormat = null;
-               AudioOutputStream outputStream = null;
                for (String name : sound) {
                   ChunkedByteBuffer audio = library.getAudioData(name);
                   if (audio == null) {
@@ -140,22 +138,11 @@ public class SoundPlayer {
                      name = "PAUSE";
                   }
                   
-                  AudioFileFormat format = AudioSystem.getAudioFileFormat(audio.toInputStream());
-                  if (outputStream == null) {
-                     outputStream = new AudioOutputStream(device, format.getFormat());
-                  } else if (openStreamFormat != null && !openStreamFormat.getFormat().equals(format.getFormat()) ) {
-                     outputStream.close();
-                     outputStream = new AudioOutputStream(device, format.getFormat());
-                     openStreamFormat = format;
-                  }
-                  play(audio, /*outputStream, */ name);
-               }
-               if (outputStream != null) {
-                  outputStream.close();
+                  play(audio, name);
                }
                if (result.length() > 0) {
                   result.insert(0, "Could not find ");
-                  result.append(" in the library."); 
+                  result.append(" in the library.");
                }
             }
          } catch (Exception e) {
@@ -171,70 +158,41 @@ public class SoundPlayer {
       return null;
    }
    
-   /**
-    * play the given audio data in the chunked byte buffer
-    */
-   public String play(ChunkedByteBuffer data, String soundName) {
-      String results = null;
+   public void play(ChunkedByteBuffer soundData, String name) {
       try {
-         AudioOutputStream outputStream = getOutputStream(device, AudioSystem.getAudioInputStream(data.toInputStream()));
-         results = play(data, outputStream, soundName);
-         outputStream.close();
-      } catch (Exception e) {
-         LoggingService.getInstance().serverLog("Error playing " + soundName + ": ");
-         e.printStackTrace(LoggingService.getInstance().getServerLog());
-      }
-      return results;
-   }
+         AudioInputStream in = AudioSystem.getAudioInputStream(soundData.toInputStream());
+         AudioFormat baseFormat = in.getFormat();
+         AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
+         AudioInputStream din = AudioSystem.getAudioInputStream(decodedFormat, in);
    
-   public void play0(ChunkedByteBuffer data, String soundName) {
-      try {
-         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(data.toInputStream());
-         try {
-            Clip clip = AudioSystem.getClip(getDevice().getMixerInfo());
-            clip.open(audioInputStream);
-            try {
-               clip.start();
-               clip.drain();
-            } finally {
-               clip.close();
+         byte[] data = new byte[4096];
+         SourceDataLine line = null;
+         DataLine.Info info = new DataLine.Info(SourceDataLine.class, decodedFormat);
+         line = (SourceDataLine)AudioSystem.getLine(info);
+         line.open(decodedFormat);
+         if (line != null) {
+            // Start
+            line.start();
+            int nBytesRead = 0;
+            int nBytesWritten = 0;
+            while (nBytesRead != -1 && !stopped) {
+               nBytesRead = din.read(data, 0, data.length);
+               if (nBytesRead != -1) {
+                  nBytesWritten = line.write(data, 0, nBytesRead);
+               }
             }
-         } finally {
-            audioInputStream.close();
+            if (nBytesWritten == 0) {
+            }
+            // Stop
+            line.drain();
+            line.stop();
+            line.close();
+            din.close();
          }
       } catch (Exception e) {
-         LoggingService.getInstance().serverLog("Error playing " + soundName + ": ");
+         LoggingService.getInstance().serverLog("Error playing " + name + ": ");
          e.printStackTrace(LoggingService.getInstance().getServerLog());
       }
-   }
-   
-   /**
-    * play the given audio data in the chunked byte buffer
-    * **** THIS METHOD DOES **NOT** CLOSE THE AUDIO OUTPUT STREAM ****
-    */
-   public String play(ChunkedByteBuffer data, AudioOutputStream outputStream, String soundName) {
-      try {
-         //uninterruptable:
-         //data.writeTo(outputStream);
-         
-         int length = data.length();
-         int chunkSize = data.getChunkSize();
-         int stopChunk = length / chunkSize;
-         int stopColumn = length % chunkSize;
-
-         for (int i = 0; i < stopChunk && !stopped; i++) {
-            outputStream.write(data.getChunk(i), 0, chunkSize);
-         }
-
-         if (stopColumn > 0 && !stopped) {
-            outputStream.write(data.getChunk(stopChunk), 0, stopColumn);
-         }
-         outputStream.flush();
-      } catch (Exception e) {
-         LoggingService.getInstance().serverLog("Error playing " + soundName + ": ");
-         e.printStackTrace(LoggingService.getInstance().getServerLog());
-      }
-      return null;
    }
 
 }
