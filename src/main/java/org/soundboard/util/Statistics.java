@@ -212,20 +212,22 @@ public class Statistics {
          if (new File(FILE).exists()) {
             ChunkedCharBuffer buf = new ChunkedCharBuffer();
             buf.append(new InputStreamReader(new FileInputStream(FILE)));
-            String contents = buf.toString();
-            String[] lines = contents.split("[\n\r]+");
-            for (String line : lines) {
-               String[] splitLine = line.split("\\|");
-               String item = splitLine[0];
-               Map<String, Integer> statUses = new TreeMap<String, Integer>();
-               stats.put(item, statUses);
-               
-               if (splitLine.length > 1) {
-                  String[] uses = splitLine[1].split(";");
-                  for (String use : uses) {
-                     if (StringUtil.isNotNullOrEmpty(use)) {
-                        String[] stat = use.split("=");
-                        statUses.put(stat[0], new Integer(stat[1]));
+            if (buf.length() > 5) {
+               String contents = buf.toString();
+               String[] lines = contents.split("[\n\r]+");
+               for (String line : lines) {
+                  String[] splitLine = line.split("\\|");
+                  String item = splitLine[0];
+                  Map<String, Integer> statUses = new TreeMap<String, Integer>();
+                  stats.put(item, statUses);
+                  
+                  if (splitLine.length > 1) {
+                     String[] uses = splitLine[1].split(";");
+                     for (String use : uses) {
+                        if (StringUtil.isNotNullOrEmpty(use)) {
+                           String[] stat = use.split("=");
+                           statUses.put(stat[0], new Integer(stat[1]));
+                        }
                      }
                   }
                }
