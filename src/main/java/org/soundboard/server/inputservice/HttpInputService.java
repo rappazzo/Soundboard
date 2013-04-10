@@ -48,7 +48,11 @@ public class HttpInputService extends InputService {
          StringBuilder buf = new StringBuilder();
          String[] split = servletRequest.getRequestURI().substring(1).split("[/\\ ]+");
          if (split != null && split.length > 0 && split[0].length() > 0) {
-            String html = new CommandHandler().handleCommand(HttpInputService.this, servletRequest.getHeader(HttpConstants.HOST), split, false, true);
+            String who = servletRequest.getRemoteHost();
+            if (who != null && !who.isEmpty()) {
+               who = servletRequest.getRemoteAddr();
+            }
+            String html = new CommandHandler().handleCommand(HttpInputService.this, who, split, false, true);
             if (html != null) {
                buf.append(html);
             }

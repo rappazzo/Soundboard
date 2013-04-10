@@ -5,3 +5,6 @@ target/
 #User Specific Files
 bin/soundboard.properties
 bin/*.txt
+history.txt
+crontab.txt
+statistics.txt

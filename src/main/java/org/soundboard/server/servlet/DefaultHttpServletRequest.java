@@ -44,7 +44,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
    private String contentType = null;
    private Map<String, String> headerMap = new HashMap<String, String>();
 
-   private String remoteAddress;
+   private InetAddress remoteIP;
 
    public static DefaultHttpServletRequest create(InputStream inStream, InetAddress address) {
       try {
@@ -61,7 +61,7 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
                return null;
             }
          }
-         request.remoteAddress = address.getHostAddress();
+         request.remoteIP = address;
          ServletInputStream in = request.getInputStream();
          byte[] buffer = new byte[1024];
 
@@ -520,14 +520,14 @@ public class DefaultHttpServletRequest implements HttpServletRequest {
     * @see javax.servlet.ServletRequest#getRemoteAddr()
     */
    @Override public String getRemoteAddr() {
-      return remoteAddress;
+      return remoteIP.getHostAddress();
    }
 
    /* (non-Javadoc)
     * @see javax.servlet.ServletRequest#getRemoteHost()
     */
    @Override public String getRemoteHost() {
-      return null;
+      return remoteIP.getHostName();
    }
 
    /* (non-Javadoc)
