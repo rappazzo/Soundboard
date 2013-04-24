@@ -207,15 +207,6 @@ public class SoundLibrary {
       return added;
    }
    
-   public static final File TEMP_DIR;
-   static {
-      File tmpFile = new File(System.getenv().get("TEMP"));
-      if (!tmpFile.exists()) {
-         tmpFile = new File(".");
-      }
-      TEMP_DIR = tmpFile;
-   }
-   
    /**
     * get the list of files in the library (lists the short name -- lookup key)
     */
