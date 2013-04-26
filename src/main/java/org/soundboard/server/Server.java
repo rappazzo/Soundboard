@@ -187,6 +187,9 @@ public class Server implements Stoppable {
          
          CommandHandler.registerCommands();
          
+         //add the shutdown command
+         CommandHandler.register("shutdown", new ShutdownCommand(SoundboardConfiguration.config().getProperty(SoundboardConfiguration.SHUTDOWN_PASSWORD)));
+         
          //setup and kick off threads
          SoundPlayer player = SoundPlayer.getInstance();
          player.initialize(getAudioPlaybackDevice(SoundboardConfiguration.config().getProperty(SoundboardConfiguration.AUDIO_PLAYBACK_DEVICE)));
@@ -296,6 +299,36 @@ public class Server implements Stoppable {
       }
       server.run();
       System.exit(1);
+   }
+   
+   public class ShutdownCommand extends Command {
+      private final String password;
+      public ShutdownCommand(String password) {
+         this.password = password;
+      }
+      
+      /**
+       * get the command description
+       */
+      @Override public String getDescription() {
+         return "Shutdown the soundboard.";
+      }
+      
+      @Override
+      public boolean isHttpCommand() {
+         return false;
+      }
+      
+      @Override
+      public String execute(InputService inputService, String who, String[] args, boolean isCron, boolean respondWithHtml) {
+         if (password == null || password.equals(args[0])) {
+            doShutdown();
+            return "shutting down";
+         } else {
+            return "Not permitted";
+         }
+      }
+      
    }
    
 }

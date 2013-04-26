@@ -42,6 +42,8 @@ public class SoundboardConfiguration {
    public static final String COMMAND = "command";
    public static final String DISABLED = "disabled";
    public static final String SHORTCUT = "shortcut";
+
+   public static final String SHUTDOWN_PASSWORD = "shutdown.password";
    
    Properties config;
 
