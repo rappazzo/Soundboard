@@ -8,3 +8,4 @@ bin/*.txt
 history.txt
 crontab.txt
 statistics.txt
+nohup.out
