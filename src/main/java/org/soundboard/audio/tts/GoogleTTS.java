@@ -35,7 +35,7 @@ public class GoogleTTS {
          String encoded = URLEncoder.encode(text, "UTF-8"); //text.replace(' ', '+')
          URL url = new URL("http://translate.google.com/translate_tts?tl=en&ie=UTF-8&q="+encoded);
          URLConnection c = url.openConnection();
-         c.addRequestProperty("User-Agent", "Mozilla/4.76");
+         c.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
          return new ChunkedByteBuffer().append(c.getInputStream());
       } catch (Exception e) {
          // TODO Auto-generated catch block
