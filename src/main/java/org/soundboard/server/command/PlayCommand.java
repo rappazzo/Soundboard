@@ -43,14 +43,14 @@ public class PlayCommand extends Command {
    @Override public String execute(InputService inputService, String who, String[] args, boolean isCron, boolean respondWithHtml) {
       StringBuffer out = new StringBuffer();
       LoggingService.getInstance().log((isCron ? "cron (" + who +")" : who) + ": " + args[1]);
-      SoundPlayer player = SoundPlayer.getInstance();
+      SoundPlayer player = SoundPlayer.get();
       String playInfo = player.play(args[1]);
       if (playInfo != null && !playInfo.equals("")) {
          out.append(playInfo);
          out.append("\n");
       }
-      SoundLibrary lib = SoundLibrary.getInstance();
-      if (lib.getAudioData(args[1]) != null) {
+      SoundLibrary lib = SoundLibrarian.getInstance();
+      if (lib.getData(args[1]) != null) {
          Statistics.incrementCount(args[1], who);
       }
       return out.toString();

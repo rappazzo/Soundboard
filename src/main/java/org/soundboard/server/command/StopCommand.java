@@ -41,7 +41,7 @@ public class StopCommand extends Command {
     * execute the command with the given arguements.  Note that args[0] is the name of the command.
     */
    @Override public String execute(InputService inputService, String who, String[] args, boolean isCron, boolean respondWithHtml) {
-      SoundPlayer player = SoundPlayer.getInstance();
+      SoundPlayer player = SoundPlayer.get();
       LoggingService.getInstance().log(who + ": " + args[0]);
       player.stop();
       return null;

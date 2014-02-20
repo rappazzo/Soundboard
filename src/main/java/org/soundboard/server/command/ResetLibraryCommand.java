@@ -49,9 +49,9 @@ public class ResetLibraryCommand extends Command {
     */
    @Override public String execute(InputService inputService, String who, String[] args, boolean isCron, boolean respondWithHtml) {
       LoggingService.getInstance().serverLog(who + ": " + args[0] + (args.length > 1 ? " " + args[1] : ""));
-      String libName = args != null && args.length > 1 ? args[1] : SoundLibrary.DEFAULT_LIBRARY;
-      if (SoundLibrary.libraryExists(libName)) {
-         SoundLibrary.getInstance(libName).resetLoadAttempts();
+      String libName = args != null && args.length > 1 ? args[1] : SoundLibrarian.DEFAULT_LIBRARY;
+      if (SoundLibrarian.libraryExists(libName)) {
+         SoundLibrarian.getInstance(libName).resetLoadAttempts();
       }
       return null;
    }

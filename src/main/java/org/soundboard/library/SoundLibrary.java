@@ -17,60 +17,46 @@
  **/
 package org.soundboard.library;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.regex.*;
-import javax.sound.sampled.*;
-import org.soundboard.audio.tts.*;
-import org.soundboard.server.*;
-import org.soundboard.util.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import org.soundboard.util.ChunkedByteBuffer;
+import com.google.common.base.Preconditions;
 
-public class SoundLibrary {
-   
-   private static Map<String, SoundLibrary> INSTANCES = new HashMap<String, SoundLibrary>();
-   public static final String DEFAULT_LIBRARY = "defaulLibrary";
+public abstract class SoundLibrary {
 
-   private Map<String, ChunkedByteBuffer> library = new TreeMap<String, ChunkedByteBuffer>();
    private Map<String, Long> loadAttempts = new HashMap<String, Long>();
-   private Set<DirectoryListeningData> listenToDirs = new HashSet<DirectoryListeningData>();
-   private String libraryName;
-   private boolean logAdditions = false;
+   private String libraryName = null;
    
-   private Future activeLibrary = null;
-   private static ExecutorService LIBRARY_THREAD_POOL = Executors.newCachedThreadPool(new NamedThreadFactory("Active Library Listener", true));
    
-   private SoundLibrary(String libraryName) {
+   public void setName(String libraryName) {
+      Preconditions.checkState(this.libraryName == null || this.libraryName.equals(libraryName), "%s is being renamed to %s", this.libraryName, this.libraryName);
       this.libraryName = libraryName;
    }
    
-   public static SoundLibrary getInstance() {
-      return getInstance(DEFAULT_LIBRARY);
-   }
-   
-   public static SoundLibrary getInstance(String libraryName) {
-      if (INSTANCES.get(libraryName) == null) {
-         SoundLibrary instance = new SoundLibrary(libraryName);
-         INSTANCES.put(libraryName, instance);
-      }
-      return INSTANCES.get(libraryName);
-   }
-   
-   public static boolean libraryExists(String libraryName) {
-      return INSTANCES.get(libraryName) != null;
+   public String getName() {
+      return this.libraryName;
    }
    
    /**
     * refresh the load attempts so that they will be tried again.
     */
-   public void resetLoadAttempts() {
+   public final void resetLoadAttempts() {
       loadAttempts.clear();
+   }
+   
+   protected void markAttempt(File source) {
+      String shortName = source.getName().substring(0, source.getName().lastIndexOf(".")).toLowerCase();
+      loadAttempts.put(shortName, new Long(source.lastModified()));
    }
    
    /**
     * check if the given file should be attempted to be loaded
     */
-   public boolean attemptLoad(File file) {
+   protected final boolean shouldAttemptLoad(File file) {
       boolean attempt = false;
       if (file != null) {
          String shortName = file.getName().substring(0, file.getName().lastIndexOf(".")).toLowerCase();
@@ -78,27 +64,6 @@ public class SoundLibrary {
          attempt = (lastAttemptedModifyTimestamp == null || lastAttemptedModifyTimestamp.longValue() != file.lastModified());
       }
       return attempt;
-   }
-
-   /**
-    * register a directory to be listened for with the active library
-    */
-   public void registerListener(String dirname) {
-      registerListener(dirname, false);
-   }
-   public void registerListener(String dirname, boolean recurseSubdirectories) {
-      registerListener(dirname, false, null);
-   }
-   public void registerListener(String dirname, boolean recurseSubdirectories, FilenameFilter filter) {
-      listenToDirs.add(new DirectoryListeningData(new File(dirname), recurseSubdirectories, filter));
-      
-      if (activeLibrary == null || activeLibrary.isDone()) {
-         activeLibrary = LIBRARY_THREAD_POOL.submit(new ActiveLibrary());
-      }
-   }
-   
-   public void stopActiveLibrary() {
-      listenToDirs.clear();
    }
    
    /**
@@ -156,113 +121,29 @@ public class SoundLibrary {
     * add a file to the library
     * return if the file was added to the library
     */
-   public boolean addFile(File source) {
-      boolean added = false;
-      if (source != null && !source.isDirectory()) {
-         try {
-            String shortName = source.getName().substring(0, source.getName().lastIndexOf(".")).toLowerCase();
-            if (attemptLoad(source) && library.get(shortName) == null) {
-               loadAttempts.put(shortName, new Long(source.lastModified()));
-               long fileLen = source.length();
-               //use the file length to set the buffer size
-               int chunkSize = ChunkedByteBuffer.DEFAULT_CHUNK_SIZE;
-               int numChunks = ChunkedByteBuffer.DEFAULT_NUMBER_OF_CHUNKS;
-               if (fileLen > chunkSize * numChunks) {
-                  numChunks = new Long((fileLen / chunkSize) + 1).intValue();
-               }
-               ChunkedByteBuffer data;
-               if (Pattern.compile("\\.txt$").matcher(source.getName()).find()) {
-                  ChunkedCharBuffer text = new ChunkedCharBuffer(chunkSize, numChunks);
-                  FileReader fr = new FileReader(source);
-                  text.append(fr);
-                  fr.close();
-
-                  data = GoogleTTS.toSoundBytes(text.toString());
-               } else {
-                  data = new ChunkedByteBuffer(chunkSize, numChunks);
-                  FileInputStream fis = new FileInputStream(source);
-                  data.append(fis);
-                  fis.close(); // Release the file lock
-               }
-               
-               //check that the data is valid audio data
-               AudioInputStream audioStream = AudioSystem.getAudioInputStream(data.toInputStream());
-               DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioStream.getFormat());
-               try {
-                  AudioSystem.getLine(info);
-                  library.put(shortName, data);
-                  added = true;
-                  if (logAdditions && added) {
-                     LoggingService.getInstance().log("Added '" + shortName + "' into library" + (!libraryName.equals(DEFAULT_LIBRARY) ? " " + libraryName : ""));
-                  }
-               } catch (Exception e) {
-                  LoggingService.getInstance().log("NOT Added '" + shortName + "': "+e.getMessage());
-               }
-            }
-         } catch (Exception e) {
-            LoggingService.getInstance().log("Unable to load '" + source.getAbsolutePath() + "' into library" + (!libraryName.equals(DEFAULT_LIBRARY) ? " " + libraryName : ""));
-            LoggingService.getInstance().serverLog(e);
-         }
-      }
-      return added;
-   }
+   public abstract boolean addFile(File source);
    
    /**
     * get the list of files in the library (lists the short name -- lookup key)
     */
-   public Set<String> list() {
-      return library.keySet();
-   }
+   public abstract Set<String> list();
 
+   /**
+    * Get the file for the given name
+    */
+   public abstract File getFile(String name);
+   
    /**
     * get the data for the given short filename
     */
-   public ChunkedByteBuffer getData(String shortName) {
-      return library.get(shortName.toLowerCase());
-   }
+   public abstract ChunkedByteBuffer getData(String name);
    
    /**
     * get the inputstream for the given short filename
     */
-   public InputStream getDataStream(String shortName) {
-      ChunkedByteBuffer data = library.get(shortName.toLowerCase());
+   public InputStream getDataStream(String name) {
+      ChunkedByteBuffer data = getData(name);
       return data != null ? data.toInputStream() : null;
-   }
-   
-   /**
-    * get the inputstream for the given short filename
-    */
-   public ChunkedByteBuffer getAudioData(String shortName) {
-      return library.get(shortName.toLowerCase());
-   }
-   
-   class DirectoryListeningData {
-      public File dir;
-      public boolean recurse = false;
-      public FilenameFilter filter = null;
-      
-      public DirectoryListeningData(File dir, boolean recurse, FilenameFilter filter) {
-         this.dir = dir;
-         this.recurse = recurse;
-         this.filter = filter;
-      }
-   }
-   
-   //TODO: try to use the OS file system to listen for changes
-   private class ActiveLibrary implements Runnable {
-      @Override public void run() {
-         try {
-            while (listenToDirs.size() > 0) {
-               for (DirectoryListeningData data : listenToDirs) {
-                  addDirectory(data.dir, data.recurse, data.filter);
-               }
-               Thread.sleep(10000);
-               logAdditions = true;
-            }
-         } catch (Exception e) {
-            LoggingService.getInstance().serverLog("Error actively listening for library changes.  De-activating");
-         }
-      }
    }
    
 }

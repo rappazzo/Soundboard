@@ -50,10 +50,8 @@ public class SayCommand extends Command {
       LoggingService.getInstance().log((isCron ? "cron (" + who +")" : who) + ": " + sentence);
       
       try {
-         org.soundboard.audio.SoundPlayer sbPlayer = org.soundboard.audio.SoundPlayer.getInstance();
-         sbPlayer.play(GoogleTTS.toSoundBytes(sentence), sentence);
-         out.append("I said: ");
-         out.append(sentence);
+         String answer = TTS.get().say(sentence);
+         out.append(answer);
          out.append("\n");
       } catch (Exception e) {
          LoggingService.getInstance().serverLog("Error Saying \""+sentence+"\": "+ e.getMessage());

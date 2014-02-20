@@ -59,10 +59,10 @@ public class GibberishCommand extends Command {
          //a number between 4 and 10;
          numberOfWords = Randomizer.getRandomizer().nextInt(6) + 4;
       }
-      if (libName == null || !SoundLibrary.libraryExists(libName)) {
-         libName = SoundLibrary.DEFAULT_LIBRARY;
+      if (libName == null || !SoundLibrarian.libraryExists(libName)) {
+         libName = SoundLibrarian.DEFAULT_LIBRARY;
       }
-      SoundLibrary lib = SoundLibrary.getInstance(libName);
+      SoundLibrary lib = SoundLibrarian.getInstance(libName);
       List<String> words = new ArrayList<String>();
       words.addAll(lib.list());
       //build the command to send to sentence

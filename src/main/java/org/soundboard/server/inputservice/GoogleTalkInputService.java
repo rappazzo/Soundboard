@@ -17,11 +17,19 @@
  **/
 package org.soundboard.server.inputservice;
 
-import java.util.concurrent.*;
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.packet.*;
-import org.soundboard.server.*;
-import org.soundboard.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+import org.soundboard.server.LoggingService;
+import org.soundboard.server.SoundboardConfiguration;
+import org.soundboard.server.Stoppable;
+import org.soundboard.util.NamedThreadFactory;
 
 public class GoogleTalkInputService extends InputService implements Runnable, Stoppable {
 

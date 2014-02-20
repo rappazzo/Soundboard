@@ -48,11 +48,11 @@ public class SentenceCommand extends Command {
          LoggingService.getInstance().log((isCron ? "cron (" + who +")" : who) + ": " + args[0] + " \"" + StringUtil.join(words, " ") + "\"");
 
          String libName = args[0].toLowerCase();
-         if (!SoundLibrary.libraryExists(libName)) {
-            libName = SoundLibrary.DEFAULT_LIBRARY;
+         if (!SoundLibrarian.libraryExists(libName)) {
+            libName = SoundLibrarian.DEFAULT_LIBRARY;
          }
-         SoundLibrary lib = SoundLibrary.getInstance(libName);
-         SoundPlayer player = SoundPlayer.getInstance();
+         SoundLibrary lib = SoundLibrarian.getInstance(libName);
+         SoundPlayer player = SoundPlayer.get();
          String playInfo = player.play(lib, words);
          if (playInfo != null && !playInfo.equals("")) {
             out.append(playInfo);

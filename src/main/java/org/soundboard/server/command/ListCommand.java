@@ -45,7 +45,7 @@ public class ListCommand extends Command {
    @Override public String execute(InputService inputService, String who, String[] args, boolean isCron, boolean respondWithHtml) {
       LoggingService.getInstance().serverLog(who + ": " + args[0] + (args.length > 1 ? " " + args[1] : ""));
       StringBuilder out = new StringBuilder();
-      SoundLibrary library = SoundLibrary.getInstance();
+      SoundLibrary library = SoundLibrarian.getInstance();
       Set<String> books = library.list();
       boolean returnedData = false;
       if (respondWithHtml) {

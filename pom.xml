@@ -19,20 +19,21 @@
          <version>2.5</version>
       </dependency>
       <dependency>
-         <groupId>javax.media</groupId>
-         <artifactId>jmf</artifactId>
-         <version>2.1.1e</version>
-      </dependency>
-      <dependency>
 		 <groupId>com.google.guava</groupId>
 		 <artifactId>guava</artifactId>
 		 <version>11.0.2</version>
+      </dependency>
+      <dependency>
+         <groupId>javax.media</groupId>
+         <artifactId>jmf</artifactId>
+         <version>2.1.1e</version>
       </dependency>
       <dependency>
          <groupId>jivesoftware</groupId>
          <artifactId>smack</artifactId>
          <version>3.1.0</version>
       </dependency>
+      <!--
       <dependency>
       	<groupId>net.javazoom</groupId>
       	<artifactId>jlayer</artifactId>
@@ -48,6 +49,7 @@
         <artifactId>tritonus_share</artifactId>
         <version>0.3.6</version>
       </dependency>
+      -->
    </dependencies>
    <build>
       <plugins>
@@ -72,6 +74,16 @@
                   <descriptorRef>jar-with-dependencies</descriptorRef>
                </descriptorRefs>
             </configuration>
+            <!-- have this plugin run with the 'package' step -->
+            <executions>
+               <execution>
+                  <id>make-assembly</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>attached</goal>
+                  </goals>
+               </execution>
+            </executions>
          </plugin>
       </plugins>
    </build>

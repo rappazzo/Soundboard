@@ -17,13 +17,18 @@
  **/
 package org.soundboard.server;
 
-import java.util.*;
-import javax.sound.sampled.*;
-import org.soundboard.audio.*;
-import org.soundboard.library.*;
-import org.soundboard.server.command.*;
-import org.soundboard.server.inputservice.*;
-import org.soundboard.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.soundboard.audio.SoundPlayer;
+import org.soundboard.library.SoundLibrarian;
+import org.soundboard.library.SoundLibrary;
+import org.soundboard.server.command.Command;
+import org.soundboard.server.command.CommandHandler;
+import org.soundboard.server.inputservice.InputService;
+import org.soundboard.util.History;
+import org.soundboard.util.Karma;
+import org.soundboard.util.Statistics;
+import org.soundboard.util.User;
 
 
 public class Server implements Stoppable {
@@ -58,48 +63,6 @@ public class Server implements Stoppable {
       this.configFileLocation = configFileLocation;
    }
    
-   /**
-    * Get the Audio Playback Device with the given name.  If the device does not support playback, null is returned
-    */
-   public Mixer getAudioPlaybackDevice(String deviceName) {
-      Mixer.Info[] mixerInfoData = AudioSystem.getMixerInfo();
-      try {
-         AudioFormat testFormat = new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, (float)11025.0, 8, 1, 1, (float)11025.0, false);
-         DataLine.Info info = new DataLine.Info(SourceDataLine.class, testFormat);
-         if (mixerInfoData != null) {
-            for (Mixer.Info mixerInfo : mixerInfoData) {
-               Mixer mixer = AudioSystem.getMixer(mixerInfo);
-               if (mixer.isLineSupported(info)) {
-                  if (deviceName == null || mixerInfo.getName().equals(deviceName)) {
-                     SourceDataLine dataline = null;
-                     try {
-                        dataline = (SourceDataLine)mixer.getLine(info);
-                        dataline.open(testFormat);
-                        dataline.start();
-                     } catch (Exception e) {
-                        if (dataline != null) {
-                           try { dataline.close(); } catch (Exception ignored) {}
-                        }
-                        LoggingService.getInstance().log(" -- Unsupported Audio device: "+ mixerInfo.getName() + " Couldn't get line.info");
-                        continue;
-                     }
-                     LoggingService.getInstance().log("Using Audio device: "+ mixerInfo.getName());
-                     return mixer;
-                  } else {
-                     LoggingService.getInstance().log(" -- Undesired Audio device: "+ mixerInfo.getName());
-                  }
-               } else {
-                  LoggingService.getInstance().log(" -- Unsupported Audio device: "+ mixerInfo.getName());
-               }
-            }
-         }
-      } catch (Exception e) {
-         LoggingService.getInstance().log("ERROR trying to get Audio device " + e.getMessage());
-      }
-      LoggingService.getInstance().log("ERROR trying to get Audio device.  Could not find a supported device, or the desired device doesn't work.");
-      System.exit(1);
-      return null;
-   }
    
    /**
     * get an instance of the input service of the given class name
@@ -125,18 +88,18 @@ public class Server implements Stoppable {
          for (String libraryName : libraryNames) {
             String libraryFileSource = SoundboardConfiguration.config().getProperty(SoundboardConfiguration.LIBRARY, libraryName, SoundboardConfiguration.SOURCE);
             if (libraryFileSource != null) {
-               SoundLibrary library = SoundLibrary.getInstance(libraryName);
-               library.registerListener(libraryFileSource);
+               SoundLibrary library = SoundLibrarian.getInstance(libraryName);
+               SoundLibrarian.registerListener(library, libraryFileSource);
                libraries.add(library);
             }
          }
       }
       
       //add the default library
-      String libraryFileSource = SoundboardConfiguration.config().getProperty(SoundboardConfiguration.LIBRARY, SoundLibrary.DEFAULT_LIBRARY, SoundboardConfiguration.SOURCE);
+      String libraryFileSource = SoundboardConfiguration.config().getProperty(SoundboardConfiguration.LIBRARY, SoundLibrarian.DEFAULT_LIBRARY, SoundboardConfiguration.SOURCE);
       if (libraryFileSource != null) {
-         SoundLibrary library = SoundLibrary.getInstance();
-         library.registerListener(libraryFileSource);
+         SoundLibrary library = SoundLibrarian.getInstance();
+         SoundLibrarian.registerListener(library, libraryFileSource);
          libraries.add(library);
       }
    }
@@ -193,8 +156,7 @@ public class Server implements Stoppable {
          LoggingService.getInstance().serverLog("Registering shutdown command -- password: [" + shutdownPassword + "]");
          
          //setup and kick off threads
-         SoundPlayer player = SoundPlayer.getInstance();
-         player.initialize(getAudioPlaybackDevice(SoundboardConfiguration.config().getProperty(SoundboardConfiguration.AUDIO_PLAYBACK_DEVICE)));
+         SoundPlayer.get();
          
          setupLibraries();
          
@@ -273,9 +235,7 @@ public class Server implements Stoppable {
       
       //stop all active libraries
       if (libraries != null) {
-         for (SoundLibrary library : libraries) {
-            library.stopActiveLibrary();
-         }
+         SoundLibrarian.stopActiveLibrary();
       }
       //stop services
       if (inputServices != null) {

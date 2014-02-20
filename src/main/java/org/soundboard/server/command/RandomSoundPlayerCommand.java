@@ -42,12 +42,12 @@ public class RandomSoundPlayerCommand extends Command {
    @Override public String execute(InputService inputService, String who, String[] args, boolean isCron, boolean respondWithHtml) {
       StringBuffer out = new StringBuffer();
       LoggingService.getInstance().log((isCron ? "cron (" + who +")" : who) + ": " + args[0]);
-      SoundPlayer player = SoundPlayer.getInstance();
+      SoundPlayer player = SoundPlayer.get();
       String libName = args[0].toLowerCase();
-      if (!SoundLibrary.libraryExists(libName)) {
-         libName = SoundLibrary.DEFAULT_LIBRARY;
+      if (!SoundLibrarian.libraryExists(libName)) {
+         libName = SoundLibrarian.DEFAULT_LIBRARY;
       }
-      SoundLibrary lib = SoundLibrary.getInstance(libName);
+      SoundLibrary lib = SoundLibrarian.getInstance(libName);
       List<String> responses = new ArrayList<String>();
       responses.addAll(lib.list());
       if (responses.size() > 0) {
