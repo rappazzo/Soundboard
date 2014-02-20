@@ -19,15 +19,15 @@ package org.soundboard.library;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import org.soundboard.server.LoggingService;
 import org.soundboard.util.ChunkedByteBuffer;
 
 public class FilesSoundLibrary extends SoundLibrary {
 
-   private Map<String, File> files = new HashMap<String, File>();
+   private Map<String, File> files = new TreeMap<String, File>();
 
    /**
     * add a file to the library
