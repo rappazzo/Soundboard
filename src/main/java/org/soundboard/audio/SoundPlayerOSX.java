@@ -58,16 +58,13 @@ public class SoundPlayerOSX extends SoundPlayer {
    public String play(SoundLibrary library, String... sound) {
       StringBuilder result = new StringBuilder();
       if (sound != null) {
-         ProcessBuilder procBuilder = new ProcessBuilder();
-         boolean invoke = false;
+         final List<ProcessBuilder> toPlay = new ArrayList();
          for (String name : sound) {
             File audioFile = library.getFile(name);
             if (audioFile != null) {
-               if (invoke) {
-                  procBuilder.command("&&");
-               }
+               ProcessBuilder procBuilder = new ProcessBuilder();
                procBuilder.command("afplay", audioFile.getAbsolutePath());
-               invoke = true;
+               toPlay.add(procBuilder);
             } else {
                if (result.length() > 0) {
                   result.append(", ");
@@ -75,13 +72,17 @@ public class SoundPlayerOSX extends SoundPlayer {
                result.append(name);
             }
          }
-         if (invoke) {
-            try {
-               Process proc = procBuilder.start();
-               NOW_PLAYING.add(proc);
-            } catch (Exception e) {
-               LoggingService.getInstance().serverLog("Error playing " + Joiner.on(" ").join(sound) + ": ");
-               e.printStackTrace(LoggingService.getInstance().getServerLog());
+         if (!toPlay.isEmpty()) {
+            //Note: this is unstoppable
+            //TODO: execute these in a separate thread -- warning NOW_PLAYING concurrency
+            for (ProcessBuilder procBuilder : toPlay) {
+               try {
+                  Process proc = procBuilder.start();
+                  proc.waitFor();
+               } catch (Exception e) {
+                  LoggingService.getInstance().serverLog("Error playing " + Joiner.on(" ").join(sound) + ": ");
+                  e.printStackTrace(LoggingService.getInstance().getServerLog());
+               }
             }
          }
          if (result.length() > 0) {
