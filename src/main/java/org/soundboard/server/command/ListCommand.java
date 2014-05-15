@@ -52,15 +52,20 @@ public class ListCommand extends Command {
       if (respondWithHtml) {
          out.append("<table>");
       }
+      String base = "play/";
+      if (args.length > 1 && SoundLibrarian.libraryExists(args[1])) {
+         base = args[1] + "/";
+      }
       if (books.size() > 0) {
          Pattern pattern = null;
-         if (args.length >= 2) {
+         if (args.length > 2) {
             pattern = Pattern.compile(args[2], Pattern.CASE_INSENSITIVE);
          }
          for (String book : books) {
             if (pattern == null || pattern.matcher(book).find()) {
                if (respondWithHtml) {
-                  out.append("<tr><td><a href=\"/play/");
+                  out.append("<tr><td><a href=\"/");
+                  out.append(base);
                   out.append(book);
                   out.append("\">");
                   out.append(book);
