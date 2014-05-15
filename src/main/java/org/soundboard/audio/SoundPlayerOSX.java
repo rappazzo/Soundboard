@@ -24,6 +24,7 @@ import org.soundboard.library.SoundLibrarian;
 import org.soundboard.library.SoundLibrary;
 import org.soundboard.server.LoggingService;
 import org.soundboard.util.ChunkedByteBuffer;
+import com.google.common.base.Joiner;
 
 public class SoundPlayerOSX extends SoundPlayer {
    
@@ -57,15 +58,30 @@ public class SoundPlayerOSX extends SoundPlayer {
    public String play(SoundLibrary library, String... sound) {
       StringBuilder result = new StringBuilder();
       if (sound != null) {
+         ProcessBuilder procBuilder = new ProcessBuilder();
+         boolean invoke = false;
          for (String name : sound) {
             File audioFile = library.getFile(name);
             if (audioFile != null) {
-               play(audioFile, name);
+               if (invoke) {
+                  procBuilder.command("&&");
+               }
+               procBuilder.command("afplay", audioFile.getAbsolutePath());
+               invoke = true;
             } else {
                if (result.length() > 0) {
                   result.append(", ");
                }
                result.append(name);
+            }
+         }
+         if (invoke) {
+            try {
+               Process proc = procBuilder.start();
+               NOW_PLAYING.add(proc);
+            } catch (Exception e) {
+               LoggingService.getInstance().serverLog("Error playing " + Joiner.on(" ").join(sound) + ": ");
+               e.printStackTrace(LoggingService.getInstance().getServerLog());
             }
          }
          if (result.length() > 0) {

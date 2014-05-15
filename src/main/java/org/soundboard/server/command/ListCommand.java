@@ -22,6 +22,7 @@ import java.util.regex.*;
 import org.soundboard.library.*;
 import org.soundboard.server.*;
 import org.soundboard.server.inputservice.*;
+import com.google.common.base.Joiner;
 
 public class ListCommand extends Command {
    
@@ -36,16 +37,16 @@ public class ListCommand extends Command {
     * get the command description
     */
    @Override public String getDescription() {
-      return "Lists all of the sound files in the library.  Optionally accepts a RegEx arguement to filter the list.";
+      return "Lists all of the sound files in the library.  ";
    }
 
    /**
     * execute the command with the given arguements.  Note that args[0] is the name of the command.
     */
    @Override public String execute(InputService inputService, String who, String[] args, boolean isCron, boolean respondWithHtml) {
-      LoggingService.getInstance().serverLog(who + ": " + args[0] + (args.length > 1 ? " " + args[1] : ""));
+      LoggingService.getInstance().serverLog(who + ": " + Joiner.on(" ").join(args));
       StringBuilder out = new StringBuilder();
-      SoundLibrary library = SoundLibrarian.getInstance();
+      SoundLibrary library = args.length > 1 && SoundLibrarian.libraryExists(args[1]) ? SoundLibrarian.getInstance(args[1]) : SoundLibrarian.getInstance();
       Set<String> books = library.list();
       boolean returnedData = false;
       if (respondWithHtml) {
@@ -54,7 +55,7 @@ public class ListCommand extends Command {
       if (books.size() > 0) {
          Pattern pattern = null;
          if (args.length >= 2) {
-            pattern = Pattern.compile(args[1], Pattern.CASE_INSENSITIVE);
+            pattern = Pattern.compile(args[2], Pattern.CASE_INSENSITIVE);
          }
          for (String book : books) {
             if (pattern == null || pattern.matcher(book).find()) {
