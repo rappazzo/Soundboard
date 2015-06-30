@@ -17,11 +17,22 @@
  **/
 package org.soundboard.server.inputservice;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import org.soundboard.server.*;
-import org.soundboard.server.command.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.BindException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.soundboard.server.LoggingService;
+import org.soundboard.server.SoundboardConfiguration;
+import org.soundboard.server.Stoppable;
+import org.soundboard.server.command.CommandHandler;
 
 public class TelnetService extends InputService {
 
@@ -37,7 +48,7 @@ public class TelnetService extends InputService {
    protected NewConnectionHandler newConnectionHandler = null;
    protected Integer maxConnections = null;
    
-   private static Map<String, Socket> sessions = new HashMap<String, Socket>();
+   private static Map<String, Socket> sessions = new ConcurrentHashMap<String, Socket>();
 
    int listenAttempts = 0;
    final int MAX_ATTEMPTS = 10;

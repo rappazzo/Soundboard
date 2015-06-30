@@ -17,22 +17,24 @@
  **/
 package org.soundboard.server;
 
-import java.text.*;
-import java.util.*;
-import org.soundboard.server.command.*;
-import org.soundboard.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimerTask;
+import org.soundboard.server.command.CommandHandler;
+import org.soundboard.server.command.CronCommand;
+import org.soundboard.util.StringUtil;
 
 public class CronJob {
-   
+
    public static final Long NO_INTERVAL = new Long(0);
-   
+
    String identifier;
    Long interval;
    Date startTime;
    String commandString;
    String user;
    String userService;
-   
+
    /**
     * constructor for a repeating job
     */
@@ -44,7 +46,7 @@ public class CronJob {
       this.user = user;
       this.userService = userService;
    }
-   
+
    /**
     * isOneTime
     */
@@ -75,7 +77,7 @@ public class CronJob {
    public String getUserService() {
       return userService;
    }
-   
+
    public boolean isSchedulable() {
       if (getInterval() != null && getStartTime() != null && getCommandString() != null) {
          //it is only schedulable if the start time is after the current time (unless there is an interval)
@@ -83,7 +85,7 @@ public class CronJob {
       }
       return false;
    }
-   
+
    public void reschedule() {
       long now = System.currentTimeMillis();
       Date originalScheduledTime = getStartTime();
@@ -106,7 +108,7 @@ public class CronJob {
          this.startTime = adjusted;
       }
    }
-   
+
    /**
     * get the job for this
     */
@@ -118,7 +120,7 @@ public class CronJob {
          }
       };
    }
-   
+
    @Override
    public String toString() {
       StringBuilder job = new StringBuilder();
@@ -129,7 +131,7 @@ public class CronJob {
       job.append("\"");
       job.append(commandString);
       job.append("\"");
-      
+
       if (!isOneTime()) {
          job.append(" Every ");
          job.append(StringUtil.formatTimeAmount(interval));
@@ -138,8 +140,8 @@ public class CronJob {
          job.append(" At ");
       }
       job.append(new SimpleDateFormat().format(startTime));
-      
+
       return job.toString();
    }
-   
+
 }
