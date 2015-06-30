@@ -21,7 +21,7 @@
       <dependency>
 		 <groupId>com.google.guava</groupId>
 		 <artifactId>guava</artifactId>
-		 <version>11.0.2</version>
+		 <version>15.0</version>
       </dependency>
       <dependency>
          <groupId>javax.media</groupId>
@@ -33,23 +33,18 @@
          <artifactId>smack</artifactId>
          <version>3.1.0</version>
       </dependency>
-      <!--
-      <dependency>
-      	<groupId>net.javazoom</groupId>
-      	<artifactId>jlayer</artifactId>
-      	<version>1.0.1</version>
-      </dependency>
-      <dependency>
-      	<groupId>net.javazoom</groupId>
-      	<artifactId>mp3spi</artifactId>
-      	<version>1.9.4</version>
-      </dependency>
-      <dependency>
-        <groupId>org.tritonus</groupId>
-        <artifactId>tritonus_share</artifactId>
-        <version>0.3.6</version>
-      </dependency>
-      -->
+      <!--  slack -->
+	  <dependency>
+		<groupId>com.ullink.slack</groupId>
+		<artifactId>simpleslackapi</artifactId>
+		<version>0.4.0</version>
+	  </dependency>
+     <dependency>
+       <groupId>com.googlecode.json-simple</groupId>
+		 <artifactId>json-simple</artifactId>
+		 <version>1.1.1</version>
+	  </dependency>
+
    </dependencies>
    <build>
       <plugins>
