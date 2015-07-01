@@ -96,8 +96,11 @@ public class CronJob {
          Date adjusted = new Date(startTime);
          //if the interval is divisible by a DAY, then adjust for daylight savings
          if (interval % CronCommand.DAY == 0) {
-            if (originalScheduledTime.getHours() != adjusted.getHours()) {
-               adjusted.setHours(originalScheduledTime.getHours());
+            //Next fix attempt, use TimeZone.getOffset()
+            //in spring, this is > 0; in fall, this is < 0
+            int dst = adjusted.getTimezoneOffset() - originalScheduledTime.getTimezoneOffset();
+            if (dst != 0) {
+               adjusted = new Date(startTime + (dst * 60 * 1000));
             }
          }
          this.startTime = adjusted;
