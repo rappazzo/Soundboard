@@ -22,8 +22,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
@@ -377,15 +376,7 @@ class SlackWebSocketSessionImpl extends AbstractSlackSessionImpl implements Slac
 
     private HttpClient getHttpClient()
     {
-        HttpClient client = null;
-        if (proxyHost != null)
-        {
-            client = HttpClientBuilder.create().setRoutePlanner(new DefaultProxyRoutePlanner(proxyHost)).build();
-        }
-        else
-        {
-            client = HttpClientBuilder.create().build();
-        }
+        HttpClient client = new DefaultHttpClient();
         return client;
     }
 
