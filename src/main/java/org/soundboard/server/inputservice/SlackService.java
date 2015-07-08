@@ -9,8 +9,11 @@ import java.util.regex.Pattern;
 import org.soundboard.server.LoggingService;
 import org.soundboard.server.SoundboardConfiguration;
 import org.soundboard.server.command.CommandHandler;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.SlackUser;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
@@ -30,6 +33,13 @@ public class SlackService extends InputService {
    public static final String REPLY_DIRECT_ONLY = "reply-direct-only";
 
    private SlackSession session = null;
+   private Supplier<Pattern> MENTION = Suppliers.memoize(new Supplier<Pattern>() {
+      @Override public Pattern get() {
+         String botUserName = SoundboardConfiguration.config().getProperty(SoundboardConfiguration.INPUT, getServiceName(), BOT_USER);
+         SlackUser botUser = session.findUserByUserName(botUserName);
+         return Pattern.compile("<@" + botUser.getId() + ">:? `(.*?)`");
+      }
+   });
 
    public SlackService() {
    }
@@ -41,9 +51,6 @@ public class SlackService extends InputService {
       final String channel = SoundboardConfiguration.config().getProperty(SoundboardConfiguration.INPUT, getServiceName(), CHANNEL);
       final boolean replyDirectOnly = Boolean.valueOf(SoundboardConfiguration.config().getProperty(SoundboardConfiguration.INPUT, getServiceName(), REPLY_DIRECT_ONLY));
 
-
-      final Pattern MENTION = Pattern.compile("@" + botUserName + ":? `(.*?)`");
-
       session = SlackSessionFactory.createWebSocketSlackSession(apiKey);
       session.addMessagePostedListener(new SlackMessagePostedListener() {
          @Override public void onEvent(SlackMessagePosted event, SlackSession session) {
@@ -52,11 +59,12 @@ public class SlackService extends InputService {
             if (!event.getSender().getUserName().equals(botUserName)) {
                String content = event.getMessageContent();
                String[] command = null;
-               if (event.getChannel().isDirect() || event.getChannel().getName().equals(channel)) {
+               if (event.getChannel().isDirect() ) {
                   command = content.split(" ");
+               //} else if (event.getChannel().getName().equals(channel)) {
                } else {
                   // look for "(@<bot>: cmd args)"
-                  Matcher mention = MENTION.matcher(content);
+                  Matcher mention = MENTION.get().matcher(content);
                   if (mention.find()) {
                      command = mention.group(1).split(" ");
                   }
@@ -66,7 +74,7 @@ public class SlackService extends InputService {
                   String response = handler.handleCommand(SlackService.this, event.getSender().getUserName(), command);
                   if (response != null && !response.isEmpty()) {
                      if (response.length() > 100) {
-                        response = "```"+response+"```";
+                        response = "```"+response.replaceAll("(\\r?\\n)+$", "")+"```";
                      }
                      SlackChannel slackChannel = null;
                      if (replyDirectOnly) {
