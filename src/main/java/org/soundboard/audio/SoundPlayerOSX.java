@@ -27,9 +27,9 @@ import org.soundboard.util.ChunkedByteBuffer;
 import com.google.common.base.Joiner;
 
 public class SoundPlayerOSX extends SoundPlayer {
-   
+
    private List<Process> NOW_PLAYING = new ArrayList();
-   
+
    /**
     * play a sound from the defaul library
     * @return info text
@@ -38,7 +38,7 @@ public class SoundPlayerOSX extends SoundPlayer {
    public String play(String sound) {
       return play(SoundLibrarian.getInstance(), sound);
    }
-   
+
    /**
     * stop playing all sounds which are currently playing
     */
@@ -49,7 +49,7 @@ public class SoundPlayerOSX extends SoundPlayer {
       }
       NOW_PLAYING.clear();
    }
-   
+
    /**
     * play a sound from the given library
     * @return info text
@@ -62,7 +62,7 @@ public class SoundPlayerOSX extends SoundPlayer {
          for (String name : sound) {
             File audioFile = library.getFile(name);
             if (audioFile != null) {
-               toPlay.add("afplay " + audioFile.getAbsolutePath());
+               toPlay.add("/usr/bin/afplay " + audioFile.getAbsolutePath());
             } else {
                if (result.length() > 0) {
                   result.append(", ");
@@ -72,8 +72,10 @@ public class SoundPlayerOSX extends SoundPlayer {
          }
          if (!toPlay.isEmpty()) {
             ProcessBuilder procBuilder = new ProcessBuilder();
-            procBuilder.command("bash", "-c");
-            procBuilder.command(Joiner.on(" && ").join(toPlay));
+            procBuilder.command(
+               "bash", "-c",
+               Joiner.on(" && ").join(toPlay)
+            );
             try {
                Process proc = procBuilder.start();
                NOW_PLAYING.add(proc);
@@ -95,7 +97,7 @@ public class SoundPlayerOSX extends SoundPlayer {
       }
       return null;
    }
-   
+
    public void play(File soundData, String name) {
       try {
          ProcessBuilder procBuilder = new ProcessBuilder("afplay", soundData.getAbsolutePath());
@@ -106,9 +108,9 @@ public class SoundPlayerOSX extends SoundPlayer {
          e.printStackTrace(LoggingService.getInstance().getServerLog());
       }
    }
-   
+
    @Override public void play(ChunkedByteBuffer soundData, String name) {
-      //this could write to a file, but for now, no-op 
+      //this could write to a file, but for now, no-op
    }
 
 }
