@@ -17,22 +17,22 @@
  **/
 package org.soundboard.server.inputservice;
 
-import org.soundboard.server.*;
+import org.soundboard.server.Stoppable;
 
 public abstract class InputService extends Thread implements Stoppable {
-   
+
    /**
     * Constructor
     */
    public InputService() {
       this.setName(this.getClass().getSimpleName() + " Input Service");
    }
-   
+
    /**
     * provide the service name
     */
    public abstract String getServiceName();
-   
+
    /**
     * initialize this service
     * @return if this service can be run in it's current initialization state (ie, if there is enough info)
@@ -40,7 +40,7 @@ public abstract class InputService extends Thread implements Stoppable {
     * provided, this method will return false.
     */
    public abstract boolean initialize();
-   
+
    /**
     * send a message back to the
     */
@@ -50,5 +50,5 @@ public abstract class InputService extends Thread implements Stoppable {
     * check if the given user is currently available on this service
     */
    public abstract boolean isAvailable(String userName);
-   
+
 }

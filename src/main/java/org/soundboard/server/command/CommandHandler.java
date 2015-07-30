@@ -17,10 +17,18 @@
  **/
 package org.soundboard.server.command;
 
-import java.util.*;
-import org.soundboard.server.*;
-import org.soundboard.server.inputservice.*;
-import org.soundboard.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import org.soundboard.server.LoggingService;
+import org.soundboard.server.SoundboardConfiguration;
+import org.soundboard.server.inputservice.InputService;
+import org.soundboard.util.History;
+import org.soundboard.util.Karma;
+import org.soundboard.util.StringUtil;
 
 public final class CommandHandler {
 
@@ -29,20 +37,20 @@ public final class CommandHandler {
    private static Map<String, String> shortCuts = new HashMap<String, String>();
    private static Map<String, String> reverseShortCutLookup = new HashMap<String, String>();
    private static Set<String> clientUsers = new HashSet<String>();
-   
+
    /**
     * Constructor
     */
    public CommandHandler() {
    }
-   
+
    /**
-    * 
+    *
     */
    public static void registerClient(String client) {
       clientUsers.add(client);
    }
-   
+
    /**
     * register all of the commands from the configuration
     */
@@ -60,14 +68,14 @@ public final class CommandHandler {
          }
       }
    }
-   
+
    /**
     * register commands to their handlers
     */
    public static void register(String commandName, Command command) {
       register(commandName, null, command);
    }
-   
+
    /**
     * register commands to their handlers
     */
@@ -78,7 +86,7 @@ public final class CommandHandler {
          reverseShortCutLookup.put(commandName.toLowerCase(), shortCut.toLowerCase());
       }
    }
-   
+
    /**
     * remove a command handler from the registry
     */
@@ -86,21 +94,21 @@ public final class CommandHandler {
       registry.remove(commandName.toLowerCase());
       LoggingService.getInstance().serverLog("UNREGISTERING Command [" + commandName +"]");
    }
-   
+
    /**
     * get the command registry
     */
    public static Map<String, Command> getRegistry() {
       return Collections.unmodifiableMap(registry);
    }
-   
+
    /**
     * get the command registry
     */
    public static String getShortcutFor(String commandInvocation) {
       return reverseShortCutLookup.get(commandInvocation.toLowerCase());
    }
-   
+
    /**
     * get the command for the given string (could be a shortcut)
     */
@@ -114,7 +122,7 @@ public final class CommandHandler {
       }
       return command;
    }
-   
+
    /**
     * get a list of commands and their descriptions
     */
@@ -175,9 +183,7 @@ public final class CommandHandler {
                out.append("Sorry, you have bad Karma.  You will have to wait a few minutes to use the soundboard.\r\n");
                LoggingService.getInstance().serverLog("Bad Karma for " + who);
             } else {
-               if (!clientUsers.contains(who)) {
-                  LoggingService.getInstance().relay(StringUtil.join(commandAndArgs, " "));
-               }
+               LoggingService.getInstance().relay(who, StringUtil.join(commandAndArgs, " "));
                String cmdInfo = command.execute(inputService, who, commandAndArgs, isCron, respondWithHtml);
                History.addHistory(who+"@"+inputService.getServiceName(), StringUtil.join(commandAndArgs, " "));
                if (cmdInfo != null && !cmdInfo.equals("")) {
@@ -186,10 +192,11 @@ public final class CommandHandler {
                }
             }
          } else {
+            out.append("I don't konw how to handle that.  Perhaps you want 'help'?");
             LoggingService.getInstance().serverLog("Unknown command -> " + who + ": " + StringUtil.join(commandAndArgs, " "));
          }
       }
       return out.toString();
    }
-   
+
 }

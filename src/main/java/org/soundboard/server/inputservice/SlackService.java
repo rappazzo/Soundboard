@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.soundboard.server.LoggingService;
+import org.soundboard.server.Server;
 import org.soundboard.server.SoundboardConfiguration;
 import org.soundboard.server.command.CommandHandler;
 import com.google.common.base.Supplier;
@@ -60,6 +61,10 @@ public class SlackService extends InputService {
                String content = event.getMessageContent();
                String[] command = null;
                if (event.getChannel().isDirect() ) {
+            	  // be lenient running commands surrounded (or not) with backticks
+            	  if (content.charAt(0) == '`' && content.charAt(content.length() - 1) == '`') {
+            		 content = content.substring(1, content.length() - 1);
+            	  }
                   command = content.split(" ");
                //} else if (event.getChannel().getName().equals(channel)) {
                } else {
@@ -112,6 +117,18 @@ public class SlackService extends InputService {
          LoggingService.getInstance().serverLog(e);
          return false;
       }
+      Server.OFFILINE_WORKER.submit(new Runnable(){
+			@Override
+			public void run() {
+				//sleep half of a second to hope that this service is registered
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+				}
+				// Get messages relayed
+				LoggingService.getInstance().addClient(channel, getServiceName());
+			}
+      });
 
       return true;
    }
@@ -146,7 +163,7 @@ public class SlackService extends InputService {
    @Override public void send(String to, String message) {
       String channel = SoundboardConfiguration.config().getProperty(SoundboardConfiguration.INPUT, getServiceName(), CHANNEL);
       SlackChannel slackChannel = session.findChannelByName(channel);
-      session.sendMessage(slackChannel, "@"+to + ":" + message, null);
+      session.sendMessage(slackChannel, "@"+to + ": " + message, null);
    }
 
    @Override public boolean isAvailable(String userName) {
