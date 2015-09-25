@@ -99,8 +99,13 @@ public class SlackService extends InputService {
                            LoggingService.getInstance().log("SlackService: No private channel for "+event.getSender());
                         } else {
                            slackChannel = session.findChannelByName(channel);
-                           //public messages get "mentioned"
-                           response = response.replaceFirst("^I said", "@"+event.getSender().getUserName() + ": ");
+                           if (event.getChannel().equals(slackChannel)) {
+                        	   //suppress a double post from the relay (by not posting now)
+                        	   slackChannel = null;
+                           } else {
+                              //public messages get "mentioned"
+                              response = response.replaceFirst("^I said", "@"+event.getSender().getUserName() + ": ");
+                           }
                         }
                      }
                      if (slackChannel != null) {
