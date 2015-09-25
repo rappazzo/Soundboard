@@ -36,11 +36,6 @@ public class SayCommand extends Command {
       return false;
    }
    
-   @Override
-   public boolean affectsKarma() {
-      return false;
-   }
-
    /**
     * execute the command with the given arguements.  Note that args[0] is the name of the command.
     */

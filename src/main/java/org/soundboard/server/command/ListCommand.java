@@ -27,13 +27,6 @@ import com.google.common.base.Joiner;
 public class ListCommand extends Command {
    
    /**
-    * return if this command should affects karma
-    */
-   @Override public boolean affectsKarma() {
-      return false;
-   }
-   
-   /**
     * get the command description
     */
    @Override public String getDescription() {

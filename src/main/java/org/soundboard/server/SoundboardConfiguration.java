@@ -115,6 +115,7 @@ public class SoundboardConfiguration {
             Class clazz = Class.forName(className);
             return clazz.newInstance();
          } catch (Exception e) {
+        	 LoggingService.getInstance().serverLog(String.format("Class property for key '%s' does not exist.  Class: %s ", key, className));
          }
       }
       return null;

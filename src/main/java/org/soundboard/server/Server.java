@@ -29,7 +29,6 @@ import org.soundboard.server.command.Command;
 import org.soundboard.server.command.CommandHandler;
 import org.soundboard.server.inputservice.InputService;
 import org.soundboard.util.History;
-import org.soundboard.util.Karma;
 import org.soundboard.util.Statistics;
 
 
@@ -163,7 +162,6 @@ public class Server implements Stoppable {
          setupLibraries();
          
          CronService.startService();
-         Karma.getInstance().initialize(SoundboardConfiguration.config());
          
          setupInputServices();
          

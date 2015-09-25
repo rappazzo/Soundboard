@@ -22,13 +22,6 @@ import org.soundboard.server.inputservice.*;
 public abstract class Command {
    
    /**
-    * return if this command should affects karma
-    */
-   public boolean affectsKarma() {
-      return true;
-   }
-   
-   /**
     * return if this command is cronable
     */
    public boolean isCronable() {

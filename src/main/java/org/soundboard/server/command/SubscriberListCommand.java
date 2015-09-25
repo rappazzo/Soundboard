@@ -24,13 +24,6 @@ import org.soundboard.util.*;
 public class SubscriberListCommand extends Command {
    
    /**
-    * return if this command should affects karma
-    */
-   @Override public boolean affectsKarma() {
-      return false;
-   }
-   
-   /**
     * get the command description
     */
    @Override public String getDescription() {

@@ -23,13 +23,6 @@ import org.soundboard.server.inputservice.*;
 public class UnsubscribeCommand extends Command {
    
    /**
-    * return if this command should affects karma
-    */
-   @Override public boolean affectsKarma() {
-      return false;
-   }
-   
-   /**
     * return if this command is able to be used in http
     */
    @Override public boolean isHttpCommand() {

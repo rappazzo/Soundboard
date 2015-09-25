@@ -23,11 +23,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.soundboard.server.LoggingService;
 import org.soundboard.server.SoundboardConfiguration;
 import org.soundboard.server.inputservice.InputService;
 import org.soundboard.util.History;
-import org.soundboard.util.Karma;
 import org.soundboard.util.StringUtil;
 
 public final class CommandHandler {
@@ -178,18 +178,12 @@ public final class CommandHandler {
       } else {
          Command command = getCommand(commandAndArgs[0]);
          if (command != null) {
-            //cron commands shouldn't count against your karma - change this if someone figures out this loophole
-            if (!isCron && command.affectsKarma() && !Karma.getInstance().checkKarma(who)) {
-               out.append("Sorry, you have bad Karma.  You will have to wait a few minutes to use the soundboard.\r\n");
-               LoggingService.getInstance().serverLog("Bad Karma for " + who);
-            } else {
-               LoggingService.getInstance().relay(who, StringUtil.join(commandAndArgs, " "));
-               String cmdInfo = command.execute(inputService, who, commandAndArgs, isCron, respondWithHtml);
-               History.addHistory(who+"@"+inputService.getServiceName(), StringUtil.join(commandAndArgs, " "));
-               if (cmdInfo != null && !cmdInfo.equals("")) {
-                  out.append(cmdInfo);
-                  out.append("\r\n");
-               }
+            LoggingService.getInstance().relay(who, StringUtil.join(commandAndArgs, " "));
+            String cmdInfo = command.execute(inputService, who, commandAndArgs, isCron, respondWithHtml);
+            History.addHistory(who+"@"+inputService.getServiceName(), StringUtil.join(commandAndArgs, " "));
+            if (cmdInfo != null && !cmdInfo.equals("")) {
+                out.append(cmdInfo);
+                out.append("\r\n");
             }
          } else {
             out.append("I don't konw how to handle that.  Perhaps you want 'help'?");
