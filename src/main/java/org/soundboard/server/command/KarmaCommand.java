@@ -62,7 +62,6 @@ public class KarmaCommand extends Command {
          //this will actually make the command user's karma up by 2 (intentionally) (because they have already been checked)
          karma.checkKarma(who);
          karma.checkKarma(args[1]);
-         LoggingService.getInstance().privateMessage(args[1], who + " is decreasing your karma.  Your karma is now " + (-1 * karma.currentKarma(args[1])));
       }
       return out.toString();
    }

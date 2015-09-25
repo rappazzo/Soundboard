@@ -31,7 +31,6 @@ import org.soundboard.server.inputservice.InputService;
 import org.soundboard.util.History;
 import org.soundboard.util.Karma;
 import org.soundboard.util.Statistics;
-import org.soundboard.util.User;
 
 
 public class Server implements Stoppable {
@@ -151,8 +150,6 @@ public class Server implements Stoppable {
          
          SoundboardConfiguration.create(this.configFileLocation);
          
-         LoggingService.getInstance().setupDefence(SoundboardConfiguration.config().getMultiValueProperty(LoggingService.INTERLOPERS), SoundboardConfiguration.config().getMultiValueProperty(LoggingService.FAKE_USERS));
-         
          CommandHandler.registerCommands();
          
          //add the shutdown command
@@ -170,14 +167,6 @@ public class Server implements Stoppable {
          
          setupInputServices();
          
-         if (!Boolean.FALSE.toString().equals(SoundboardConfiguration.config().getProperty(SoundboardConfiguration.IS_CLIENT))) {
-            User user = new User(SoundboardConfiguration.config().getProperty(SoundboardConfiguration.SERVER, SoundboardConfiguration.USERID), getInputService(SoundboardConfiguration.config().getProperty(SoundboardConfiguration.SERVER, SoundboardConfiguration.INPUT)));
-            if (!user.isNull()) {
-               LoggingService.getInstance().setClient(user, SoundboardConfiguration.config().getProperty(SoundboardConfiguration.SERVER, SoundboardConfiguration.COMMAND));
-            }
-         }
-         LoggingService.getInstance().readObject();
-
          //setup the auto save
          int autosaveInterval = SoundboardConfiguration.config().getIntProperty(SoundboardConfiguration.AUTOSAVE_INTERVAL);
          new AutoSave(autosaveInterval).start();
@@ -213,7 +202,6 @@ public class Server implements Stoppable {
             while (this.interval > 0 && isRunning()) {
                if (!first) {
                   LoggingService.getInstance().serverLog("Auto-saving.");
-                  LoggingService.getInstance().writeObject();
                   Statistics.writeObject();
                   History.writeObject();
                   CronService.writeObject();
@@ -233,7 +221,6 @@ public class Server implements Stoppable {
    private void doShutdown() {
       LoggingService.getInstance().serverLog("\nShutting down...");
       stopRunning();
-      LoggingService.getInstance().writeObject();
       Statistics.writeObject();
       History.writeObject();
       CronService.writeObject();

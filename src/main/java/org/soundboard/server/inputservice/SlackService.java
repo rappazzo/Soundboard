@@ -126,7 +126,7 @@ public class SlackService extends InputService {
 				} catch (InterruptedException e) {
 				}
 				// Get messages relayed
-				LoggingService.getInstance().addClient(channel, getServiceName());
+				LoggingService.getInstance().subscribe(channel, getServiceName());
 			}
       });
 
