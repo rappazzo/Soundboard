@@ -38,9 +38,9 @@ public class History {
     */
    public static void addHistory(final String who, final String command) {
       final String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
-      new OfflineWorker(
-         new OfflineTask() {
-            @Override public void doOfflineWork() {
+      Server.OFFILINE_WORKER.submit(
+         new Runnable() {
+            @Override public void run() {
                synchronized(mutex) {
                   history.add(new HistoryEntry(who, now, command));
                   while (history.size() > MAX_LIVE_HISTORY_SIZE) {

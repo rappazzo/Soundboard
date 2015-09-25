@@ -36,9 +36,9 @@ public class Statistics {
     * increment the statistical count for the given item
     */
    public static void incrementCount(final String item, final String who) {
-      new OfflineWorker(
-         new OfflineTask() {
-            @Override public void doOfflineWork() {
+      Server.OFFILINE_WORKER.submit(
+         new Runnable() {
+            @Override public void run() {
                if (item != null) {
                   synchronized (mutex) {
                      Map<String, Integer> uses = stats.get(item);

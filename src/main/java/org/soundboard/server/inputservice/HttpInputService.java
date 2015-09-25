@@ -63,7 +63,7 @@ public class HttpInputService extends InputService {
          String[] split = servletRequest.getRequestURI().substring(1).split("[/\\ ]+");
          if (split != null && split.length > 0 && split[0].length() > 0) {
             String who = servletRequest.getRemoteHost();
-            if (who != null && !who.isEmpty()) {
+            if (who == null || who.isEmpty()) {
                who = servletRequest.getRemoteAddr();
             }
             String html = new CommandHandler().handleCommand(HttpInputService.this, who, split, false, true);

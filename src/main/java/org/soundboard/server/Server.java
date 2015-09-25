@@ -19,6 +19,9 @@ package org.soundboard.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.soundboard.audio.SoundPlayer;
 import org.soundboard.library.SoundLibrarian;
 import org.soundboard.library.SoundLibrary;
@@ -32,6 +35,8 @@ import org.soundboard.util.User;
 
 
 public class Server implements Stoppable {
+
+   public static ExecutorService OFFILINE_WORKER = Executors.newCachedThreadPool();
    
    protected static boolean running = true;
    private String configFileLocation = "./soundboard.properties";

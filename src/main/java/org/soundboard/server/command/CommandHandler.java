@@ -17,10 +17,18 @@
  **/
 package org.soundboard.server.command;
 
-import java.util.*;
-import org.soundboard.server.*;
-import org.soundboard.server.inputservice.*;
-import org.soundboard.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import org.soundboard.server.LoggingService;
+import org.soundboard.server.SoundboardConfiguration;
+import org.soundboard.server.inputservice.InputService;
+import org.soundboard.util.History;
+import org.soundboard.util.Karma;
+import org.soundboard.util.StringUtil;
 
 public final class CommandHandler {
 
@@ -175,9 +183,7 @@ public final class CommandHandler {
                out.append("Sorry, you have bad Karma.  You will have to wait a few minutes to use the soundboard.\r\n");
                LoggingService.getInstance().serverLog("Bad Karma for " + who);
             } else {
-               if (!clientUsers.contains(who)) {
-                  LoggingService.getInstance().relay(StringUtil.join(commandAndArgs, " "));
-               }
+               LoggingService.getInstance().relay(who, StringUtil.join(commandAndArgs, " "));
                String cmdInfo = command.execute(inputService, who, commandAndArgs, isCron, respondWithHtml);
                History.addHistory(who+"@"+inputService.getServiceName(), StringUtil.join(commandAndArgs, " "));
                if (cmdInfo != null && !cmdInfo.equals("")) {
@@ -186,6 +192,7 @@ public final class CommandHandler {
                }
             }
          } else {
+            out.append("I don't konw how to handle that.  Perhaps you want 'help'?");
             LoggingService.getInstance().serverLog("Unknown command -> " + who + ": " + StringUtil.join(commandAndArgs, " "));
          }
       }
