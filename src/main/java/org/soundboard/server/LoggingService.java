@@ -17,16 +17,37 @@
  **/
 package org.soundboard.server;
 
-import java.io.*;
-import java.util.*;
-import org.soundboard.server.command.*;
-import org.soundboard.server.inputservice.*;
-import org.soundboard.util.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import org.soundboard.server.command.Command;
+import org.soundboard.server.command.CommandHandler;
+import org.soundboard.server.inputservice.InputService;
+import org.soundboard.util.ChunkedCharBuffer;
+import org.soundboard.util.Randomizer;
+import org.soundboard.util.StringUtil;
+import org.soundboard.util.User;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 
 public class LoggingService implements Serializable {
-   
+
    private static LoggingService INSTANCE = new LoggingService();
-   
+
    private static final String FILE = "subscribers.txt";
 
    public static final String INTERLOPERS = "interlopers";
@@ -35,25 +56,25 @@ public class LoggingService implements Serializable {
 
    private Thread subscriberThread = new SubscriberThread();
    private Queue<QueuedMessage> messageQueue = new LinkedList<QueuedMessage>();
-   private Map<String, Set<User>> subscribers = new HashMap<String, Set<User>>();
-   private Map<String, Set<User>> clients = new HashMap<String, Set<User>>();
+   private SetMultimap<String, User> subscribers = HashMultimap.create();
+   private SetMultimap<String, User> clients = HashMultimap.create();
    private Map<String, InputService> services = new HashMap<String, InputService>();
    private Set<String> interlopers = new HashSet<String>();
    private String[] fakeUsers = null;
    private boolean isClient = false;
    private boolean clientAck = false;
    private Object mutex = new Object();
-   
+
    private LoggingService() {}
-   
+
    public static LoggingService getInstance() {
       return INSTANCE;
    }
-   
+
    private void clientAck() {
       clientAck = true;
    }
-   
+
    public void setClient(User user, String connectionCommand) {
       serverLog("Trying to connect to soundboard server...");
       isClient = true;
@@ -82,7 +103,7 @@ public class LoggingService implements Serializable {
       CommandHandler.unregister("ACKNOWLEDGED");
       serverLog("Connected to " + user.getServiceId());
    }
-   
+
    public void stopService() {
       try {
          subscriberThread.interrupt();
@@ -90,7 +111,7 @@ public class LoggingService implements Serializable {
          serverLog("Exception stopping subscriber thread");
       }
    }
-   
+
    public void setupDefence(String[] interloperList, String[] fakeUserList) {
       if (interloperList != null) {
          for (String who : interloperList) {
@@ -102,21 +123,21 @@ public class LoggingService implements Serializable {
          fakeUsers = fakeUserList;
       }
    }
-   
+
    /**
     * get the server log stream
     */
    public PrintStream getServerLog() {
       return System.out;
    }
-   
+
    /**
     * log a message
     */
    public void serverLog(String message) {
       System.out.println(message);
    }
-   
+
    /**
     * log a message
     */
@@ -124,7 +145,7 @@ public class LoggingService implements Serializable {
       System.out.println("Exception in thread: " + Thread.currentThread().getName());
       e.printStackTrace();
    }
-   
+
    /**
     * log a message
     */
@@ -134,21 +155,18 @@ public class LoggingService implements Serializable {
          messageQueue.offer(new QueuedMessage(message));
       }
    }
-   
+
    /**
     * log a message
     */
-   public void relay(final String message) {
+   public void relay(final String who, final String message) {
       if (!isClient) {
-         new OfflineWorker(
-            new OfflineTask() {
-               @Override public void doOfflineWork() {
-                  for (Map.Entry<String, Set<User>> entry : clients.entrySet()) {
-                     Set<User> users = entry.getValue();
-                     for (User user : users) {
-                        if (user.getServiceInstance() != null) {
-                           user.getServiceInstance().send(user.getServiceId(), message);
-                        }
+         Server.OFFILINE_WORKER.submit(
+            new Runnable() {
+               @Override public void run() {
+                  for (User user : clients.values()) {
+                     if (user.getServiceInstance() != null) {
+                        user.getServiceInstance().send(who, message);
                      }
                   }
                }
@@ -156,7 +174,7 @@ public class LoggingService implements Serializable {
          );
       }
    }
-   
+
    /**
     * log a message
     */
@@ -166,81 +184,71 @@ public class LoggingService implements Serializable {
          messageQueue.offer(new QueuedMessage(message, who));
       }
    }
-   
+
    /**
     * register an available input service
     */
    public void registerInputService(InputService service) {
       services.put(service.getClass().getName(), service);
+      services.put(service.getServiceName(), service);
    }
-   
+
    /**
     * get the current list of subscribers
     */
    public String getSubscribers() {
       StringBuilder buf = new StringBuilder();
-      for (Map.Entry<String, Set<User>> subscriberPerService : subscribers.entrySet()) {
-         Set<User> subscriberSet = subscriberPerService.getValue();
-         if (subscriberSet != null) {
-            for (User subscriber : subscriberSet) {
-               buf.append("\n");
-               buf.append(subscriber.getServiceId());
-            }
-         }
+      for (User subscriber : subscribers.values()) {
+         buf.append("\n");
+         buf.append(subscriber.getServiceId());
       }
       return buf.toString();
    }
-   
+
    /**
     * subscribe to the log
     */
    public void subscribe(String id, String inputServiceName) {
       addSubscription(id, inputServiceName, subscribers, "Subscriber");
    }
-   
+
    /**
     * subscribe to the log
     */
    public void unsubscribe(String id, String inputServiceName) {
       removeSubscription(id, inputServiceName, subscribers, "Subscriber");
    }
-   
+
    /**
     * add a client
     */
    public void addClient(String id, String inputServiceName) {
       addSubscription(id, inputServiceName, clients, "Client");
    }
-   
+
    /**
     * add a client
     */
    public void removeClient(String id, String inputServiceName) {
       removeSubscription(id, inputServiceName, clients, "Client");
    }
-   
+
    /**
     * subscribe to the log
     */
-   public void addSubscription(String id, String inputServiceName, Map<String, Set<User>> subscriberMap, String subscriberType) {
-      Set<User> subscribersWithThisService = subscriberMap.get(inputServiceName);
-      if (subscribersWithThisService == null) {
-         subscribersWithThisService = new HashSet<User>();
-         subscriberMap.put(inputServiceName, subscribersWithThisService);
-      }
-      subscribersWithThisService.add(new User(id, services.get(inputServiceName)));
-      String shortServiceName = inputServiceName;
+   public void addSubscription(String id, String inputServiceName, SetMultimap<String, User> subscriberMap, String subscriberType) {
+      subscriberMap.put(inputServiceName, new User(id, services.get(inputServiceName)));
       int dotIndex = inputServiceName.lastIndexOf(".");
       if (dotIndex >= 0) {
-         shortServiceName = inputServiceName.substring(dotIndex + 1);
+    	 inputServiceName = inputServiceName.substring(dotIndex + 1);
       }
-      LoggingService.getInstance().serverLog("Adding " + subscriberType + " [" + id + "], service: " + shortServiceName);
+      LoggingService.getInstance().serverLog("Adding " + subscriberType + " [" + id + "], service: " + inputServiceName);
    }
-   
+
    /**
     * subscribe to the log
     */
-   public void removeSubscription(String id, String inputServiceName, Map<String, Set<User>> subscriberMap, String subscriberType) {
+   public void removeSubscription(String id, String inputServiceName, SetMultimap<String, User> subscriberMap, String subscriberType) {
       Set<User> subscribersWithThisService = subscriberMap.get(inputServiceName);
       if (subscribersWithThisService != null) {
          Iterator<User> it = subscribersWithThisService.iterator();
@@ -257,15 +265,15 @@ public class LoggingService implements Serializable {
          }
       }
    }
-   
+
    /**
     * write the subscribers to disk
     */
    public void writeObject() {
       ChunkedCharBuffer buf = new ChunkedCharBuffer();
-      for (Map.Entry<String, Set<User>> entry : getInstance().subscribers.entrySet()) {
+      for (Map.Entry<String, Collection<User>> entry : getInstance().subscribers.asMap().entrySet()) {
          String serviceName = entry.getKey();
-         Set<User> logToIds = entry.getValue();
+         Collection<User> logToIds = entry.getValue();
          if (logToIds != null && logToIds.size() > 0) {
             buf.append(serviceName);
             buf.append("|");
@@ -276,9 +284,9 @@ public class LoggingService implements Serializable {
             buf.append("\n");
          }
       }
-      for (Map.Entry<String, Set<User>> entry : getInstance().clients.entrySet()) {
+      for (Map.Entry<String, Collection<User>> entry : getInstance().clients.asMap().entrySet()) {
          String serviceName = entry.getKey();
-         Set<User> logToIds = entry.getValue();
+         Collection<User> logToIds = entry.getValue();
          if (logToIds != null && logToIds.size() > 0) {
             buf.append(CLIENT);
             buf.append(serviceName);
@@ -343,7 +351,7 @@ public class LoggingService implements Serializable {
          getInstance().serverLog("Error reading subscribers: " + e);
       }
    }
-   
+
    private class QueuedMessage {
       public String message;
       public String who;
@@ -355,7 +363,7 @@ public class LoggingService implements Serializable {
          this.who = who;
       }
    }
-   
+
    private class SubscriberThread extends Thread {
       Map<String, User> userIdToUser = new HashMap<String, User>();
       public SubscriberThread() {
@@ -401,13 +409,8 @@ public class LoggingService implements Serializable {
                         }
                      }
                   } else {
-                     for (Map.Entry<String, Set<User>> entry : subscribers.entrySet()) {
-                        Set<User> logToIds = entry.getValue();
-                        if (logToIds != null && logToIds.size() > 0) {
-                           for (User logToId : logToIds) {
-                              addToMessages(messagesTo, logToId.getServiceId(), logToId.getServiceInstance(), message.message);
-                           }
-                        }
+                     for (User logToId : subscribers.values()) {
+                        addToMessages(messagesTo, logToId.getServiceId(), logToId.getServiceInstance(), message.message);
                      }
                   }
                }
@@ -433,7 +436,7 @@ public class LoggingService implements Serializable {
             serverLog("Stopping Subscriber Thread");
          }
       }
-      
+
       /**
        * add a new message to the list
        */
@@ -453,5 +456,5 @@ public class LoggingService implements Serializable {
          messagesTo.put(user, messages);
       }
    }
-   
+
 }
