@@ -66,22 +66,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.websocket.CloseReason;
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.DeploymentException;
-import javax.websocket.EncodeException;
-import javax.websocket.Encoder;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Extension;
-import javax.websocket.MessageHandler;
-import javax.websocket.PongMessage;
-import javax.websocket.RemoteEndpoint;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
-import javax.websocket.server.HandshakeRequest;
-import javax.websocket.server.ServerEndpointConfig;
+
 import org.glassfish.tyrus.core.cluster.BroadcastListener;
 import org.glassfish.tyrus.core.cluster.ClusterContext;
 import org.glassfish.tyrus.core.cluster.RemoteSession;
@@ -101,6 +86,23 @@ import org.glassfish.tyrus.core.l10n.LocalizationMessages;
 import org.glassfish.tyrus.core.monitoring.EndpointEventListener;
 import org.glassfish.tyrus.spi.UpgradeRequest;
 import org.glassfish.tyrus.spi.UpgradeResponse;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.DecodeException;
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.EncodeException;
+import repackaged.soundboard.javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.Endpoint;
+import repackaged.soundboard.javax.websocket.EndpointConfig;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.MessageHandler;
+import repackaged.soundboard.javax.websocket.PongMessage;
+import repackaged.soundboard.javax.websocket.RemoteEndpoint;
+import repackaged.soundboard.javax.websocket.Session;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
+import repackaged.soundboard.javax.websocket.server.HandshakeRequest;
+import repackaged.soundboard.javax.websocket.server.ServerEndpointConfig;
 
 /**
  * Wraps the registered application class.
@@ -523,13 +525,13 @@ public class TyrusEndpointWrapper {
     /**
      * Server-side; Get server endpoint path.
      * <p/>
-     * In this context, server endpoint path is exactly what is present in {@link javax.websocket.server.ServerEndpoint}
-     * annotation or returned from {@link javax.websocket.server.ServerEndpointConfig#getPath()} method call. Context
+     * In this context, server endpoint path is exactly what is present in {@link repackaged.soundboard.javax.websocket.server.ServerEndpoint}
+     * annotation or returned from {@link repackaged.soundboard.javax.websocket.server.ServerEndpointConfig#getPath()} method call. Context
      * path is not included.
      *
      * @return server endpoint path.
-     * @see javax.websocket.server.ServerEndpoint#value()
-     * @see javax.websocket.server.ServerEndpointConfig#getPath()
+     * @see repackaged.soundboard.javax.websocket.server.ServerEndpoint#value()
+     * @see repackaged.soundboard.javax.websocket.server.ServerEndpointConfig#getPath()
      */
     String getServerEndpointPath() {
         return serverEndpointPath;
@@ -1040,7 +1042,7 @@ public class TyrusEndpointWrapper {
     }
 
     /**
-     * Check {@link Throwable} produced during {@link javax.websocket.OnMessage} annotated method call.
+     * Check {@link Throwable} produced during {@link repackaged.soundboard.javax.websocket.OnMessage} annotated method call.
      *
      * @param throwable thrown {@link Throwable}.
      * @param session   {@link Session} related to {@link Throwable}.
@@ -1640,8 +1642,8 @@ public class TyrusEndpointWrapper {
         }
 
         /**
-         * Invoked before {@link javax.websocket.OnOpen} annotated method
-         * or {@link Endpoint#onOpen(javax.websocket.Session, javax.websocket.EndpointConfig)} is invoked.
+         * Invoked before {@link repackaged.soundboard.javax.websocket.OnOpen} annotated method
+         * or {@link Endpoint#onOpen(repackaged.soundboard.javax.websocket.Session, repackaged.soundboard.javax.websocket.EndpointConfig)} is invoked.
          * <p/>
          * Default implementation always returns {@link org.glassfish.tyrus.core.TyrusEndpointWrapper.SessionListener.OnOpenResult#SESSION_ALLOWED}.
          *
@@ -1654,8 +1656,8 @@ public class TyrusEndpointWrapper {
         }
 
         /**
-         * Invoked after {@link javax.websocket.OnClose} annotated method
-         * or {@link Endpoint#onClose(javax.websocket.Session, javax.websocket.CloseReason)} execution.
+         * Invoked after {@link repackaged.soundboard.javax.websocket.OnClose} annotated method
+         * or {@link Endpoint#onClose(repackaged.soundboard.javax.websocket.Session, repackaged.soundboard.javax.websocket.CloseReason)} execution.
          *
          * @param session     closed session.
          * @param closeReason close reason.

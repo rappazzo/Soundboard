@@ -39,10 +39,10 @@
  */
 package org.glassfish.tyrus.container.grizzly.client;
 
-import javax.websocket.ContainerProvider;
-import javax.websocket.WebSocketContainer;
-
 import org.glassfish.tyrus.client.ClientManager;
+
+import repackaged.soundboard.javax.websocket.ContainerProvider;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
 
 /**
  * @author Pavel Bucek (pavel.bucek at oracle.com)

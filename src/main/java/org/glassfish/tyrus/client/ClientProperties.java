@@ -43,14 +43,14 @@ package org.glassfish.tyrus.client;
 import java.net.URI;
 import java.util.Map;
 
-import javax.websocket.ClientEndpointConfig;
-
 import org.glassfish.tyrus.client.auth.AuthConfig;
 import org.glassfish.tyrus.client.auth.AuthenticationException;
 import org.glassfish.tyrus.client.auth.Authenticator;
 import org.glassfish.tyrus.client.auth.Credentials;
 import org.glassfish.tyrus.spi.ClientEngine;
 import org.glassfish.tyrus.spi.UpgradeResponse;
+
+import repackaged.soundboard.javax.websocket.ClientEndpointConfig;
 
 /**
  * Tyrus client configuration properties.
@@ -87,7 +87,7 @@ public final class ClientProperties {
      *     client.connectToServer(...);
      * </pre>
      *
-     * @see javax.websocket.ClientEndpointConfig#getUserProperties()
+     * @see repackaged.soundboard.javax.websocket.ClientEndpointConfig#getUserProperties()
      */
     public static final String PROXY_URI = "org.glassfish.tyrus.client.proxy";
 
@@ -107,9 +107,9 @@ public final class ClientProperties {
      *     client.connectToServer(...);
      * </pre>
      * Please note that these headers will be used only when establishing proxy connection, for modifying
-     * WebSocket handshake headers, see {@link javax.websocket.ClientEndpointConfig.Configurator#beforeRequest(java.util.Map)}.
+     * WebSocket handshake headers, see {@link repackaged.soundboard.javax.websocket.ClientEndpointConfig.Configurator#beforeRequest(java.util.Map)}.
      *
-     * @see javax.websocket.ClientEndpointConfig#getUserProperties()
+     * @see repackaged.soundboard.javax.websocket.ClientEndpointConfig#getUserProperties()
      */
     public static final String PROXY_HEADERS = "org.glassfish.tyrus.client.proxy.headers";
 

@@ -55,12 +55,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.websocket.Decoder;
-import javax.websocket.MessageHandler;
-import javax.websocket.PongMessage;
-
 import org.glassfish.tyrus.core.coder.CoderWrapper;
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
+
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.MessageHandler;
+import repackaged.soundboard.javax.websocket.PongMessage;
 
 /**
  * Manages registered {@link MessageHandler}s and checks whether the new ones may be registered.
@@ -68,7 +68,7 @@ import org.glassfish.tyrus.core.l10n.LocalizationMessages;
  * @author Stepan Kopriva (stepan.kopriva at oracle.com)
  * @author Pavel Bucek (pavel.bucek at oracle.com)
  * @see MessageHandler
- * @see javax.websocket.OnMessage
+ * @see repackaged.soundboard.javax.websocket.OnMessage
  */
 class MessageHandlerManager {
 

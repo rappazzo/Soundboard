@@ -46,9 +46,9 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation may be used to annotate server endpoints as a optional annotation
- * to {@link javax.websocket.server.ServerEndpoint}. When number of maximal open
+ * to {@link repackaged.soundboard.javax.websocket.server.ServerEndpoint}. When number of maximal open
  * sessions is exceeded every new attempt to open session is closed with
- * {@link javax.websocket.CloseReason.CloseCodes#TRY_AGAIN_LATER}.
+ * {@link repackaged.soundboard.javax.websocket.CloseReason.CloseCodes#TRY_AGAIN_LATER}.
  * If value less then 1 is specified, no limit will be applied.
  * Annotation example:
  * <pre><code>

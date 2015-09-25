@@ -41,7 +41,7 @@ package org.glassfish.tyrus.spi;
 
 import java.io.IOException;
 
-import javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.DeploymentException;
 
 
 /**
@@ -51,7 +51,7 @@ import javax.websocket.DeploymentException;
  *
  * TODO rename the class to avoid findbugs
  */
-public interface ServerContainer extends javax.websocket.server.ServerContainer {
+public interface ServerContainer extends repackaged.soundboard.javax.websocket.server.ServerContainer {
 
     /**
      * Starts the server.

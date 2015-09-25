@@ -44,12 +44,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.DeploymentException;
-
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.spi.ClientContainer;
 import org.glassfish.tyrus.spi.ClientEngine;
+
+import repackaged.soundboard.javax.websocket.ClientEndpointConfig;
+import repackaged.soundboard.javax.websocket.DeploymentException;
 
 /**
  * @author Danny Coward (danny.coward at oracle.com)

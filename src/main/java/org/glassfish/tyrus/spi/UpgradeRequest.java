@@ -39,7 +39,7 @@
  */
 package org.glassfish.tyrus.spi;
 
-import javax.websocket.server.HandshakeRequest;
+import repackaged.soundboard.javax.websocket.server.HandshakeRequest;
 
 /**
  * Abstraction for a HTTP upgrade request. A transport creates an implementation

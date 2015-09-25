@@ -44,8 +44,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import javax.websocket.CloseReason;
-import javax.websocket.SendHandler;
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.SendHandler;
 
 /**
  * Cluster related context.
@@ -132,22 +132,22 @@ public abstract class ClusterContext {
     public abstract Future<Void> sendPong(String sessionId, byte[] data);
 
     /**
-     * Send text message with {@link javax.websocket.SendHandler}.
+     * Send text message with {@link repackaged.soundboard.javax.websocket.SendHandler}.
      *
      * @param sessionId   remote session id.
      * @param text        text to be sent.
-     * @param sendHandler sendhandler instance on which {@link javax.websocket.SendHandler#onResult(javax.websocket.SendResult)} will be invoked.
-     * @see javax.websocket.SendHandler
+     * @param sendHandler sendhandler instance on which {@link repackaged.soundboard.javax.websocket.SendHandler#onResult(javax.websocket.SendResult)} will be invoked.
+     * @see repackaged.soundboard.javax.websocket.SendHandler
      */
     public abstract void sendText(String sessionId, String text, SendHandler sendHandler);
 
     /**
-     * Send binary message with {@link javax.websocket.SendHandler}.
+     * Send binary message with {@link repackaged.soundboard.javax.websocket.SendHandler}.
      *
      * @param sessionId   remote session id.
      * @param data        data to be sent.
-     * @param sendHandler sendhandler instance on which {@link javax.websocket.SendHandler#onResult(javax.websocket.SendResult)} will be invoked.
-     * @see javax.websocket.SendHandler
+     * @param sendHandler sendhandler instance on which {@link repackaged.soundboard.javax.websocket.SendHandler#onResult(javax.websocket.SendResult)} will be invoked.
+     * @see repackaged.soundboard.javax.websocket.SendHandler
      */
     public abstract void sendBinary(String sessionId, byte[] data, SendHandler sendHandler);
 
@@ -173,7 +173,7 @@ public abstract class ClusterContext {
      * @param sessionId    remote session id.
      * @param endpointPath endpoint path identifying sessions alignment to the endpoint.
      * @return {@code true} when session is opened, {@code false} otherwise.
-     * @see javax.websocket.Session#isOpen()
+     * @see repackaged.soundboard.javax.websocket.Session#isOpen()
      */
     public abstract boolean isSessionOpen(String sessionId, String endpointPath);
 
@@ -188,7 +188,7 @@ public abstract class ClusterContext {
     public abstract Future<Void> close(String sessionId);
 
     /**
-     * Close remote session with custom {@link javax.websocket.CloseReason}.
+     * Close remote session with custom {@link repackaged.soundboard.javax.websocket.CloseReason}.
      *
      * @param sessionId   remote session id.
      * @param closeReason custom close reason.

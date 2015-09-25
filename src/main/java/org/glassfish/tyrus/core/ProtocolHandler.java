@@ -50,12 +50,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.CloseReason;
-import javax.websocket.Extension;
-import javax.websocket.SendHandler;
-import javax.websocket.SendResult;
-import javax.websocket.server.HandshakeRequest;
-
 import org.glassfish.tyrus.core.extension.ExtendedExtension;
 import org.glassfish.tyrus.core.frame.BinaryFrame;
 import org.glassfish.tyrus.core.frame.CloseFrame;
@@ -68,6 +62,12 @@ import org.glassfish.tyrus.spi.CompletionHandler;
 import org.glassfish.tyrus.spi.UpgradeRequest;
 import org.glassfish.tyrus.spi.UpgradeResponse;
 import org.glassfish.tyrus.spi.Writer;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.SendHandler;
+import repackaged.soundboard.javax.websocket.SendResult;
+import repackaged.soundboard.javax.websocket.server.HandshakeRequest;
 
 /**
  * Tyrus protocol handler.

@@ -43,9 +43,9 @@ package org.glassfish.tyrus.core.extension;
 import java.util.List;
 import java.util.Map;
 
-import javax.websocket.Extension;
-
 import org.glassfish.tyrus.core.frame.Frame;
+
+import repackaged.soundboard.javax.websocket.Extension;
 
 /**
  * WebSocket {@link Extension}.
@@ -75,7 +75,7 @@ import org.glassfish.tyrus.core.frame.Frame;
  * </pre>
  * <p/>
  * Any exception thrown from processIncoming or processOutgoing will be logged. Rest of extension chain will be invoked
- * without any modifications done in "faulty" extension. {@link javax.websocket.OnError} won't be triggered. (this might change).
+ * without any modifications done in "faulty" extension. {@link repackaged.soundboard.javax.websocket.OnError} won't be triggered. (this might change).
  * <p/>
  * <p/>
  * <pre>TODO:

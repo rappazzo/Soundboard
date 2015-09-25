@@ -58,8 +58,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.DeploymentException;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -74,6 +72,8 @@ import org.glassfish.tyrus.core.TyrusFuture;
 import org.glassfish.tyrus.core.Utils;
 import org.glassfish.tyrus.spi.ClientEngine;
 import org.glassfish.tyrus.spi.UpgradeRequest;
+
+import repackaged.soundboard.javax.websocket.DeploymentException;
 
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.GrizzlyFuture;
@@ -113,7 +113,7 @@ public class GrizzlyClientSocket {
      *     client.connectToServer(...);
      * </pre>
      *
-     * @see javax.websocket.ClientEndpointConfig#getUserProperties()
+     * @see repackaged.soundboard.javax.websocket.ClientEndpointConfig#getUserProperties()
      * @deprecated please use {@link org.glassfish.tyrus.client.ClientProperties#PROXY_URI}.
      */
     @SuppressWarnings("UnusedDeclaration")
@@ -135,9 +135,9 @@ public class GrizzlyClientSocket {
      *     client.connectToServer(...);
      * </pre>
      * Please note that these headers will be used only when establishing proxy connection, for modifying
-     * WebSocket handshake headers, see {@link javax.websocket.ClientEndpointConfig.Configurator#beforeRequest(java.util.Map)}.
+     * WebSocket handshake headers, see {@link repackaged.soundboard.javax.websocket.ClientEndpointConfig.Configurator#beforeRequest(java.util.Map)}.
      *
-     * @see javax.websocket.ClientEndpointConfig#getUserProperties()
+     * @see repackaged.soundboard.javax.websocket.ClientEndpointConfig#getUserProperties()
      * @deprecated please use {@link org.glassfish.tyrus.client.ClientProperties#PROXY_HEADERS}
      */
     @SuppressWarnings("UnusedDeclaration")

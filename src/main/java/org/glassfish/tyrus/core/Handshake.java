@@ -47,14 +47,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.websocket.Extension;
-import javax.websocket.HandshakeResponse;
-import javax.websocket.server.HandshakeRequest;
-
 import org.glassfish.tyrus.core.extension.ExtendedExtension;
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
 import org.glassfish.tyrus.spi.UpgradeRequest;
 import org.glassfish.tyrus.spi.UpgradeResponse;
+
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.HandshakeResponse;
+import repackaged.soundboard.javax.websocket.server.HandshakeRequest;
 
 /**
  * Class responsible for performing and validating handshake.

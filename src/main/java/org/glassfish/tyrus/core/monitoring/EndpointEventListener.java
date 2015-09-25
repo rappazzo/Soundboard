@@ -67,10 +67,10 @@ public interface EndpointEventListener {
     /**
      * Called when an error has occurred.
      * <p/>
-     * Errors that occur either during {@link javax.websocket.Endpoint#onOpen(javax.websocket.Session, javax.websocket.EndpointConfig)},
-     * {@link javax.websocket.Endpoint#onClose(javax.websocket.Session, javax.websocket.CloseReason)} and their annotated equivalent
+     * Errors that occur either during {@link repackaged.soundboard.javax.websocket.Endpoint#onOpen(javax.websocket.Session, javax.websocket.EndpointConfig)},
+     * {@link repackaged.soundboard.javax.websocket.Endpoint#onClose(javax.websocket.Session, javax.websocket.CloseReason)} and their annotated equivalent
      * or when handling an incoming message, cause this listener to be called. It corresponds to the event of invocation of
-     * {@link javax.websocket.Endpoint#onError(javax.websocket.Session, Throwable)} and its annotated equivalent.
+     * {@link repackaged.soundboard.javax.websocket.Endpoint#onError(javax.websocket.Session, Throwable)} and its annotated equivalent.
      *
      * @param sessionId an ID of the session on which the error occurred.
      * @param t         throwable that has been thrown.

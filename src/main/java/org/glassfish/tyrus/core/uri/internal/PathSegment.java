@@ -41,7 +41,7 @@ package org.glassfish.tyrus.core.uri.internal;
 
 /**
  * Represents a URI path segment and any associated matrix parameters. When an
- * instance of this type is injected with {@link javax.ws.rs.PathParam}, the
+ * instance of this type is injected with {@link repackaged.soundboard.javax.websocket.server.ws.rs.PathParam}, the
  * value of the annotation identifies which path segment is selected and the
  * presence of an {@link javax.ws.rs.Encoded} annotation will result in an
  * instance that supplies the path and matrix parameter values in
@@ -50,7 +50,7 @@ package org.glassfish.tyrus.core.uri.internal;
  * @author Paul Sandoz
  * @author Marc Hadley
  * @see UriInfo#getPathSegments
- * @see javax.ws.rs.PathParam
+ * @see repackaged.soundboard.javax.websocket.server.ws.rs.PathParam
  * @since 1.0
  */
 public interface PathSegment {

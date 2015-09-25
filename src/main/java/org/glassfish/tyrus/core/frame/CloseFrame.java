@@ -46,14 +46,14 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
 
-import javax.websocket.CloseReason;
-
 import org.glassfish.tyrus.core.CloseReasons;
 import org.glassfish.tyrus.core.ProtocolException;
 import org.glassfish.tyrus.core.StrictUtf8;
 import org.glassfish.tyrus.core.TyrusWebSocket;
 import org.glassfish.tyrus.core.Utf8DecodingException;
 import org.glassfish.tyrus.core.Utils;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
 
 /**
  * Close frame representation.

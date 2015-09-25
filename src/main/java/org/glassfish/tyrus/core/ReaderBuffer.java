@@ -49,9 +49,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.MessageHandler;
-
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
+
+import repackaged.soundboard.javax.websocket.MessageHandler;
 
 /**
  * Buffer used for the case when partial messages are received by the {@link MessageHandler.Whole}.

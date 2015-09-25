@@ -48,7 +48,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.WebSocketContainer;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
 
 /**
  * Base WebSocket container.

@@ -56,15 +56,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-import javax.websocket.ClientEndpoint;
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.CloseReason;
-import javax.websocket.DeploymentException;
-import javax.websocket.Endpoint;
-import javax.websocket.Extension;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
-
 import org.glassfish.tyrus.core.AnnotatedEndpoint;
 import org.glassfish.tyrus.core.BaseContainer;
 import org.glassfish.tyrus.core.ComponentProviderService;
@@ -78,6 +69,15 @@ import org.glassfish.tyrus.core.Utils;
 import org.glassfish.tyrus.core.monitoring.EndpointEventListener;
 import org.glassfish.tyrus.spi.ClientContainer;
 import org.glassfish.tyrus.spi.ClientEngine;
+
+import repackaged.soundboard.javax.websocket.ClientEndpoint;
+import repackaged.soundboard.javax.websocket.ClientEndpointConfig;
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.Endpoint;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.Session;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
 
 /**
  * ClientManager implementation.
@@ -118,7 +118,7 @@ public class ClientManager extends BaseContainer implements WebSocketContainer {
      *     client.connectToServer(...);
      * </pre>
      *
-     * @see javax.websocket.ClientEndpointConfig#getUserProperties()
+     * @see repackaged.soundboard.javax.websocket.ClientEndpointConfig#getUserProperties()
      * @deprecated please use {@link org.glassfish.tyrus.client.ClientProperties#PROXY_URI}.
      */
     @SuppressWarnings("UnusedDeclaration")
@@ -140,9 +140,9 @@ public class ClientManager extends BaseContainer implements WebSocketContainer {
      *     client.connectToServer(...);
      * </pre>
      * Please note that these headers will be used only when establishing proxy connection, for modifying
-     * WebSocket handshake headers, see {@link javax.websocket.ClientEndpointConfig.Configurator#beforeRequest(java.util.Map)}.
+     * WebSocket handshake headers, see {@link repackaged.soundboard.javax.websocket.ClientEndpointConfig.Configurator#beforeRequest(java.util.Map)}.
      *
-     * @see javax.websocket.ClientEndpointConfig#getUserProperties()
+     * @see repackaged.soundboard.javax.websocket.ClientEndpointConfig#getUserProperties()
      * @deprecated please use {@link org.glassfish.tyrus.client.ClientProperties#PROXY_HEADERS}.
      */
     @SuppressWarnings("UnusedDeclaration")
@@ -369,7 +369,7 @@ public class ClientManager extends BaseContainer implements WebSocketContainer {
     }
 
     /**
-     * Non-blocking version of {@link WebSocketContainer#connectToServer(Class, javax.websocket.ClientEndpointConfig, java.net.URI)}.
+     * Non-blocking version of {@link WebSocketContainer#connectToServer(Class, repackaged.soundboard.javax.websocket.ClientEndpointConfig, java.net.URI)}.
      * <p/>
      * Only simple checks are performed in the main thread; client container is created in different thread, same
      * applies to connecting etc.
@@ -379,14 +379,14 @@ public class ClientManager extends BaseContainer implements WebSocketContainer {
      * @param cec           the configuration used to configure the programmatic endpoint.
      * @return the Session created if the connection is successful.
      * @throws DeploymentException if the configuration is not valid
-     * @see WebSocketContainer#connectToServer(Class, javax.websocket.ClientEndpointConfig, java.net.URI)
+     * @see WebSocketContainer#connectToServer(Class, repackaged.soundboard.javax.websocket.ClientEndpointConfig, java.net.URI)
      */
     public Future<Session> asyncConnectToServer(Class<? extends Endpoint> endpointClass, ClientEndpointConfig cec, URI path) throws DeploymentException {
         return connectToServer(endpointClass, cec, path.toString(), getExecutorService());
     }
 
     /**
-     * Non-blocking version of {@link WebSocketContainer#connectToServer(javax.websocket.Endpoint, javax.websocket.ClientEndpointConfig, java.net.URI)}.
+     * Non-blocking version of {@link WebSocketContainer#connectToServer(repackaged.soundboard.javax.websocket.Endpoint, repackaged.soundboard.javax.websocket.ClientEndpointConfig, java.net.URI)}.
      * <p/>
      * Only simple checks are performed in the main thread; client container is created in different thread, same
      * applies to connecting etc.
@@ -396,7 +396,7 @@ public class ClientManager extends BaseContainer implements WebSocketContainer {
      * @param cec              the configuration used to configure the programmatic endpoint.
      * @return the Session created if the connection is successful.
      * @throws DeploymentException if the configuration is not valid
-     * @see WebSocketContainer#connectToServer(javax.websocket.Endpoint, javax.websocket.ClientEndpointConfig, java.net.URI)
+     * @see WebSocketContainer#connectToServer(repackaged.soundboard.javax.websocket.Endpoint, repackaged.soundboard.javax.websocket.ClientEndpointConfig, java.net.URI)
      */
     public Future<Session> asyncConnectToServer(Endpoint endpointInstance, ClientEndpointConfig cec, URI path) throws DeploymentException {
         return connectToServer(endpointInstance, cec, path.toString(), getExecutorService());
@@ -779,7 +779,7 @@ public class ClientManager extends BaseContainer implements WebSocketContainer {
     /**
      * Reconnect handler.
      * <p/>
-     * When implementing, be sure that you do have enough logic behind cancelling reconnect feature - even {@link javax.websocket.Session#close()}
+     * When implementing, be sure that you do have enough logic behind cancelling reconnect feature - even {@link repackaged.soundboard.javax.websocket.Session#close()}
      * call will be treated just like any other disconnect resulting in reconnect.
      */
     public static class ReconnectHandler {
@@ -787,7 +787,7 @@ public class ClientManager extends BaseContainer implements WebSocketContainer {
         private final static long RECONNECT_DELAY = 5L;
 
         /**
-         * Called after {@link javax.websocket.OnClose} annotated method (or {@link Endpoint#onClose(javax.websocket.Session, javax.websocket.CloseReason)}
+         * Called after {@link repackaged.soundboard.javax.websocket.OnClose} annotated method (or {@link Endpoint#onClose(repackaged.soundboard.javax.websocket.Session, repackaged.soundboard.javax.websocket.CloseReason)}
          * is invoked.
          *
          * @param closeReason close reason passed to onClose method.

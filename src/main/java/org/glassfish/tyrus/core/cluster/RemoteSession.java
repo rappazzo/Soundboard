@@ -57,18 +57,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.websocket.CloseReason;
-import javax.websocket.EncodeException;
-import javax.websocket.Extension;
-import javax.websocket.MessageHandler;
-import javax.websocket.RemoteEndpoint;
-import javax.websocket.SendHandler;
-import javax.websocket.SendResult;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
-
 import org.glassfish.tyrus.core.TyrusEndpointWrapper;
 import org.glassfish.tyrus.core.Utils;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.EncodeException;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.MessageHandler;
+import repackaged.soundboard.javax.websocket.RemoteEndpoint;
+import repackaged.soundboard.javax.websocket.SendHandler;
+import repackaged.soundboard.javax.websocket.SendResult;
+import repackaged.soundboard.javax.websocket.Session;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
 
 import static org.glassfish.tyrus.core.Utils.checkNotNull;
 

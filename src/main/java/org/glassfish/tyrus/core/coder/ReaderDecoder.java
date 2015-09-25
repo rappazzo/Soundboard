@@ -42,8 +42,8 @@ package org.glassfish.tyrus.core.coder;
 import java.io.Reader;
 import java.io.StringReader;
 
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.DecodeException;
+import repackaged.soundboard.javax.websocket.Decoder;
 
 /**
  * Built in {@link Decoder} for {@link Reader}.

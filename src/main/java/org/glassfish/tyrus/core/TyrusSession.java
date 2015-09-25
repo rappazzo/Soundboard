@@ -60,21 +60,21 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.CloseReason;
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.Extension;
-import javax.websocket.MessageHandler;
-import javax.websocket.PongMessage;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
-
 import org.glassfish.tyrus.core.cluster.ClusterContext;
 import org.glassfish.tyrus.core.cluster.DistributedSession;
 import org.glassfish.tyrus.core.cluster.RemoteSession;
 import org.glassfish.tyrus.core.cluster.SessionEventListener;
 import org.glassfish.tyrus.core.coder.CoderWrapper;
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.DecodeException;
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.MessageHandler;
+import repackaged.soundboard.javax.websocket.PongMessage;
+import repackaged.soundboard.javax.websocket.Session;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
 
 /**
  * Implementation of the {@link Session}.
@@ -196,13 +196,13 @@ public class TyrusSession implements Session, DistributedSession {
     }
 
     @Override
-    public javax.websocket.RemoteEndpoint.Async getAsyncRemote() {
+    public repackaged.soundboard.javax.websocket.RemoteEndpoint.Async getAsyncRemote() {
         checkConnectionState(State.CLOSED);
         return asyncRemote;
     }
 
     @Override
-    public javax.websocket.RemoteEndpoint.Basic getBasicRemote() {
+    public repackaged.soundboard.javax.websocket.RemoteEndpoint.Basic getBasicRemote() {
         checkConnectionState(State.CLOSED);
         return basicRemote;
     }
@@ -324,8 +324,8 @@ public class TyrusSession implements Session, DistributedSession {
     /**
      * {@inheritDoc}
      *
-     * @deprecated please use {@link #addMessageHandler(Class, javax.websocket.MessageHandler.Whole)} or
-     * {@link #addMessageHandler(Class, javax.websocket.MessageHandler.Partial)}
+     * @deprecated please use {@link #addMessageHandler(Class, repackaged.soundboard.javax.websocket.MessageHandler.Whole)} or
+     * {@link #addMessageHandler(Class, repackaged.soundboard.javax.websocket.MessageHandler.Partial)}
      */
     @Override
     public void addMessageHandler(MessageHandler handler) {
@@ -344,7 +344,7 @@ public class TyrusSession implements Session, DistributedSession {
      * message types please see {@link MessageHandler.Whole} and {@link MessageHandler.Partial}.
      * Adding more than one of any one type will result in a runtime exception.
      * <p/>
-     * <p>See {@link javax.websocket.Endpoint} for a usage example.
+     * <p>See {@link repackaged.soundboard.javax.websocket.Endpoint} for a usage example.
      *
      * @param clazz   type of the message processed by message handler to be registered.
      * @param handler the MessageHandler to be added.
@@ -368,7 +368,7 @@ public class TyrusSession implements Session, DistributedSession {
      * message types please see {@link MessageHandler.Whole} and {@link MessageHandler.Partial}.
      * Adding more than one of any one type will result in a runtime exception.
      * <p/>
-     * <p>See {@link javax.websocket.Endpoint} for a usage example.
+     * <p>See {@link repackaged.soundboard.javax.websocket.Endpoint} for a usage example.
      *
      * @param clazz   type of the message processed by message handler to be registered.
      * @param handler the MessageHandler to be added.

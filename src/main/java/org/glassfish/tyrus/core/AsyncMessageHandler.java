@@ -39,7 +39,7 @@
  */
 package org.glassfish.tyrus.core;
 
-import javax.websocket.MessageHandler;
+import repackaged.soundboard.javax.websocket.MessageHandler;
 
 /**
  * Asynchonous message handler with added getType method.
@@ -59,7 +59,7 @@ interface AsyncMessageHandler extends MessageHandler.Partial {
      * Get max message size allowed for this message handler.
      *
      * @return max message size.
-     * @see javax.websocket.OnMessage#maxMessageSize()
+     * @see repackaged.soundboard.javax.websocket.OnMessage#maxMessageSize()
      */
     long getMaxMessageSize();
 }

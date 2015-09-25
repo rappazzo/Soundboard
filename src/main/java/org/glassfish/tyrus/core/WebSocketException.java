@@ -40,7 +40,7 @@
 
 package org.glassfish.tyrus.core;
 
-import javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.CloseReason;
 
 /**
  * WebSocketException can be thrown during runtime (after handshake).

@@ -42,13 +42,13 @@ package org.glassfish.tyrus.client.auth;
 
 import java.net.URI;
 
-import javax.websocket.DeploymentException;
-import javax.websocket.WebSocketContainer;
-
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.core.Beta;
 import org.glassfish.tyrus.core.HandshakeException;
 import org.glassfish.tyrus.spi.UpgradeResponse;
+
+import repackaged.soundboard.javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
 
 /**
  * This exception is set as a cause of {@link DeploymentException} thrown when {@link WebSocketContainer}.connectToServer(...)

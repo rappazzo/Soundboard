@@ -40,9 +40,9 @@
 
 package org.glassfish.tyrus.core;
 
-import javax.websocket.CloseReason;
-
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
 
 /**
  * TODO

@@ -43,13 +43,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.websocket.Decoder;
-import javax.websocket.Encoder;
-import javax.websocket.Extension;
-import javax.websocket.server.ServerEndpointConfig;
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.server.ServerEndpointConfig;
 
 /**
- * Configuration {@link javax.websocket.server.ServerEndpointConfig} enhanced
+ * Configuration {@link repackaged.soundboard.javax.websocket.server.ServerEndpointConfig} enhanced
  * to offer tyrus specific attributes like maxSessions.
  * Declarative way to define maxSessions is also available using
  * annotation {@link MaxSessions}.

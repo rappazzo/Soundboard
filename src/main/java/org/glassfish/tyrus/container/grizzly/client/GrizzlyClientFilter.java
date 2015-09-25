@@ -49,8 +49,6 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.CloseReason;
-
 import org.glassfish.tyrus.core.CloseReasons;
 import org.glassfish.tyrus.core.TyrusUpgradeResponse;
 import org.glassfish.tyrus.core.Utils;
@@ -58,6 +56,8 @@ import org.glassfish.tyrus.spi.ClientEngine;
 import org.glassfish.tyrus.spi.ReadHandler;
 import org.glassfish.tyrus.spi.UpgradeRequest;
 import org.glassfish.tyrus.spi.UpgradeResponse;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
 
 import org.glassfish.grizzly.Buffer;
 import org.glassfish.grizzly.Connection;

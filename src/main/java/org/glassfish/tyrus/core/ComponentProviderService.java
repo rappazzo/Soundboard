@@ -48,13 +48,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.websocket.Decoder;
-import javax.websocket.DeploymentException;
-import javax.websocket.Encoder;
-import javax.websocket.EndpointConfig;
-import javax.websocket.Session;
-
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
+
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.EndpointConfig;
+import repackaged.soundboard.javax.websocket.Session;
 
 /**
  * Provides an instance of component. Searches for registered {@link ComponentProvider}s which are used to provide instances.
@@ -159,17 +159,17 @@ public class ComponentProviderService {
     }
 
     /**
-     * Provide an instance of {@link javax.websocket.Encoder} or {@link javax.websocket.Decoder} descendant which is coupled to {@link Session}.
+     * Provide an instance of {@link repackaged.soundboard.javax.websocket.Encoder} or {@link repackaged.soundboard.javax.websocket.Decoder} descendant which is coupled to {@link Session}.
      * </p>
-     * The first time the method is called the provider creates an instance, calls {@link javax.websocket.Encoder#init(javax.websocket.EndpointConfig)}
-     * or {@link javax.websocket.Decoder#init(javax.websocket.EndpointConfig)} and caches it.
+     * The first time the method is called the provider creates an instance, calls {@link repackaged.soundboard.javax.websocket.Encoder#init(repackaged.soundboard.javax.websocket.EndpointConfig)}
+     * or {@link repackaged.soundboard.javax.websocket.Decoder#init(repackaged.soundboard.javax.websocket.EndpointConfig)} and caches it.
      * Next time the method is called the cached instance is returned.
      *
      * @param c              {@link Class} whose instance will be provided.
      * @param collector      error collector.
      * @param endpointConfig configuration corresponding to current context. Used for
-     *                       {@link javax.websocket.Encoder#init(javax.websocket.EndpointConfig)} and
-     *                       {@link javax.websocket.Decoder#init(javax.websocket.EndpointConfig)}
+     *                       {@link repackaged.soundboard.javax.websocket.Encoder#init(repackaged.soundboard.javax.websocket.EndpointConfig)} and
+     *                       {@link repackaged.soundboard.javax.websocket.Decoder#init(repackaged.soundboard.javax.websocket.EndpointConfig)}
      * @param <T>            type of the provided instance.
      * @return instance
      */
@@ -287,7 +287,7 @@ public class ComponentProviderService {
      * interactions from a new client.
      * @throws InstantiationException if there was an error producing the
      *                                endpoint instance.
-     * @see javax.websocket.server.ServerEndpointConfig.Configurator#getEndpointInstance(Class)
+     * @see repackaged.soundboard.javax.websocket.server.ServerEndpointConfig.Configurator#getEndpointInstance(Class)
      */
     public <T> Object getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
         return getInstance(endpointClass);

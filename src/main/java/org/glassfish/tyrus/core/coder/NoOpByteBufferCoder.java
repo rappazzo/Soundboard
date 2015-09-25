@@ -41,10 +41,10 @@ package org.glassfish.tyrus.core.coder;
 
 import java.nio.ByteBuffer;
 
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.EncodeException;
-import javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.DecodeException;
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.EncodeException;
+import repackaged.soundboard.javax.websocket.Encoder;
 
 /**
  * {@link Encoder} and {@link Decoder} implementation for {@link ByteBuffer}.

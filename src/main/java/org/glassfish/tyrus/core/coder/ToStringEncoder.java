@@ -40,8 +40,8 @@
 
 package org.glassfish.tyrus.core.coder;
 
-import javax.websocket.EncodeException;
-import javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.EncodeException;
+import repackaged.soundboard.javax.websocket.Encoder;
 
 /**
  * Fall-back encoder - encoders any object to string using {@link Object#toString()} method.

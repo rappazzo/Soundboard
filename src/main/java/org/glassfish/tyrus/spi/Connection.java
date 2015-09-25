@@ -40,7 +40,7 @@
 
 package org.glassfish.tyrus.spi;
 
-import javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.CloseReason;
 
 /**
  * A logical websocket connection. Tyrus creates this connection after

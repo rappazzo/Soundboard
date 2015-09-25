@@ -12,12 +12,13 @@ import org.soundboard.server.SoundboardConfiguration;
 import org.soundboard.server.command.CommandHandler;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.ullink.slack.simpleslackapi.SlackChannel;
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.SlackUser;
-import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
-import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
-import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
+
+import repackaged.soundboard.com.ullink.slack.simpleslackapi.SlackChannel;
+import repackaged.soundboard.com.ullink.slack.simpleslackapi.SlackSession;
+import repackaged.soundboard.com.ullink.slack.simpleslackapi.SlackUser;
+import repackaged.soundboard.com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
+import repackaged.soundboard.com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
+import repackaged.soundboard.com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
 
 /**
  * @author mike

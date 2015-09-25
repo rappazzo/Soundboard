@@ -39,10 +39,10 @@
  */
 package org.glassfish.tyrus.core.coder;
 
-import javax.websocket.EndpointConfig;
+import repackaged.soundboard.javax.websocket.EndpointConfig;
 
 /**
- * Adapter for {@link javax.websocket.Encoder} and {@link javax.websocket.Decoder} which implements lifecycle
+ * Adapter for {@link repackaged.soundboard.javax.websocket.Encoder} and {@link repackaged.soundboard.javax.websocket.Decoder} which implements lifecycle
  * methods.
  *
  * @author Pavel Bucek (pavel.bucek at oracle.com)

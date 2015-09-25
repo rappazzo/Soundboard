@@ -40,8 +40,8 @@
 
 package org.glassfish.tyrus.core.coder;
 
-import javax.websocket.Decoder;
-import javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.Encoder;
 
 /**
  * Wrapper of coders storing the coder coder class (and optionally coder instance), return type of the encode / decode

@@ -55,13 +55,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.CloseReason;
-import javax.websocket.Extension;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
-import javax.websocket.server.HandshakeRequest;
-
 import org.glassfish.tyrus.client.auth.AuthConfig;
 import org.glassfish.tyrus.client.auth.AuthenticationException;
 import org.glassfish.tyrus.client.auth.Authenticator;
@@ -88,6 +81,13 @@ import org.glassfish.tyrus.spi.ReadHandler;
 import org.glassfish.tyrus.spi.UpgradeRequest;
 import org.glassfish.tyrus.spi.UpgradeResponse;
 import org.glassfish.tyrus.spi.Writer;
+
+import repackaged.soundboard.javax.websocket.ClientEndpointConfig;
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.Session;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
+import repackaged.soundboard.javax.websocket.server.HandshakeRequest;
 
 /**
  * Tyrus {@link ClientEngine} implementation.
@@ -129,9 +129,9 @@ public class TyrusClientEngine implements ClientEngine {
      * incoming buffer size.
      *
      * @param endpointWrapper         wrapped client endpoint.
-     * @param listener                used for reporting back the outcome of handshake. {@link ClientHandshakeListener#onSessionCreated(javax.websocket.Session)}
+     * @param listener                used for reporting back the outcome of handshake. {@link ClientHandshakeListener#onSessionCreated(repackaged.soundboard.javax.websocket.Session)}
      *                                is invoked if handshake is completed and provided {@link Session} is open and ready to be
-     *                                returned from {@link WebSocketContainer#connectToServer(Class, javax.websocket.ClientEndpointConfig, java.net.URI)}
+     *                                returned from {@link WebSocketContainer#connectToServer(Class, repackaged.soundboard.javax.websocket.ClientEndpointConfig, java.net.URI)}
      *                                (and alternatives) call.
      * @param properties              passed container properties, see {@link org.glassfish.tyrus.client.ClientManager#getProperties()}.
      * @param connectToServerUriParam to which the client is connecting.
@@ -590,7 +590,7 @@ public class TyrusClientEngine implements ClientEngine {
 
         /**
          * Invoked when handshake is completed and provided {@link Session} is open and ready to be
-         * returned from {@link WebSocketContainer#connectToServer(Class, javax.websocket.ClientEndpointConfig, java.net.URI)}
+         * returned from {@link WebSocketContainer#connectToServer(Class, repackaged.soundboard.javax.websocket.ClientEndpointConfig, java.net.URI)}
          * (and alternatives) call.
          *
          * @param session opened client session.

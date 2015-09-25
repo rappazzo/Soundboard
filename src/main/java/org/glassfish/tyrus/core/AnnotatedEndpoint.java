@@ -54,28 +54,28 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.ClientEndpoint;
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.CloseReason;
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.DeploymentException;
-import javax.websocket.Encoder;
-import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
-import javax.websocket.server.ServerEndpointConfig;
-
 import org.glassfish.tyrus.core.coder.PrimitiveDecoders;
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
 import org.glassfish.tyrus.core.monitoring.EndpointEventListener;
+
+import repackaged.soundboard.javax.websocket.ClientEndpoint;
+import repackaged.soundboard.javax.websocket.ClientEndpointConfig;
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.DecodeException;
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.Endpoint;
+import repackaged.soundboard.javax.websocket.EndpointConfig;
+import repackaged.soundboard.javax.websocket.MessageHandler;
+import repackaged.soundboard.javax.websocket.OnClose;
+import repackaged.soundboard.javax.websocket.OnError;
+import repackaged.soundboard.javax.websocket.OnMessage;
+import repackaged.soundboard.javax.websocket.OnOpen;
+import repackaged.soundboard.javax.websocket.Session;
+import repackaged.soundboard.javax.websocket.server.PathParam;
+import repackaged.soundboard.javax.websocket.server.ServerEndpoint;
+import repackaged.soundboard.javax.websocket.server.ServerEndpointConfig;
 
 /**
  * {@link Endpoint} descendant which represents deployed annotated endpoint.

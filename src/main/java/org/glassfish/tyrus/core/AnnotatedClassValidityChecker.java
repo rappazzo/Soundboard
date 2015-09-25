@@ -45,14 +45,14 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
-import javax.websocket.CloseReason;
-import javax.websocket.Decoder;
-import javax.websocket.DeploymentException;
-import javax.websocket.Encoder;
-import javax.websocket.EndpointConfig;
-import javax.websocket.MessageHandler;
-
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.EndpointConfig;
+import repackaged.soundboard.javax.websocket.MessageHandler;
 
 /**
  * Used when processing a class annotated with {@link @ServerEndpoint} to check that it complies with specification.
@@ -79,9 +79,9 @@ class AnnotatedClassValidityChecker {
     }
 
     /**
-     * Checks whether the params of the method annotated with {@link javax.websocket.OnMessage} comply with the specification.
+     * Checks whether the params of the method annotated with {@link repackaged.soundboard.javax.websocket.OnMessage} comply with the specification.
      * <p/>
-     * Voluntary parameters of type {@link javax.websocket.Session} and parameters annotated with {@link javax.websocket.server.PathParam}
+     * Voluntary parameters of type {@link repackaged.soundboard.javax.websocket.Session} and parameters annotated with {@link repackaged.soundboard.javax.websocket.server.PathParam}
      * are checked in advance in {@link AnnotatedEndpoint}.
      */
     public void checkOnMessageParams(Method method, MessageHandler handler) {
@@ -104,9 +104,9 @@ class AnnotatedClassValidityChecker {
     }
 
     /**
-     * Checks whether the params of method annotated with {@link javax.websocket.OnOpen} comply with the specification.
+     * Checks whether the params of method annotated with {@link repackaged.soundboard.javax.websocket.OnOpen} comply with the specification.
      * <p/>
-     * Voluntary parameters of type {@link javax.websocket.Session} and parameters annotated with {@link javax.websocket.server.PathParam}
+     * Voluntary parameters of type {@link repackaged.soundboard.javax.websocket.Session} and parameters annotated with {@link repackaged.soundboard.javax.websocket.server.PathParam}
      * are checked in advance in {@link AnnotatedEndpoint}.
      *
      * @param params to be checked.
@@ -120,7 +120,7 @@ class AnnotatedClassValidityChecker {
     }
 
     /**
-     * Checks whether the params of method annotated with {@link javax.websocket.OnClose} comply with the specification.
+     * Checks whether the params of method annotated with {@link repackaged.soundboard.javax.websocket.OnClose} comply with the specification.
      *
      * @param params unknown params of the method.
      */
@@ -133,7 +133,7 @@ class AnnotatedClassValidityChecker {
     }
 
     /**
-     * Checks whether the params of method annotated with {@link javax.websocket.OnError} comply with the specification.
+     * Checks whether the params of method annotated with {@link repackaged.soundboard.javax.websocket.OnError} comply with the specification.
      *
      * @param params unknown params of the method.
      */

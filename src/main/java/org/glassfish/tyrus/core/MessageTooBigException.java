@@ -39,14 +39,14 @@
  */
 package org.glassfish.tyrus.core;
 
-import javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.CloseReason;
 
 /**
- * Thrown when {@link javax.websocket.OnMessage#maxMessageSize()} is smaller than received message size.
+ * Thrown when {@link repackaged.soundboard.javax.websocket.OnMessage#maxMessageSize()} is smaller than received message size.
  * <p/>
- * Underlying web socket connection will be closed with {@link javax.websocket.CloseReason.CloseCode}
- * {@link javax.websocket.CloseReason.CloseCodes#TOO_BIG} and {@link javax.websocket.OnError} annotated method (or
- * {@link javax.websocket.Endpoint#onError(javax.websocket.Session, Throwable)} will be called with instance of this
+ * Underlying web socket connection will be closed with {@link repackaged.soundboard.javax.websocket.CloseReason.CloseCode}
+ * {@link repackaged.soundboard.javax.websocket.CloseReason.CloseCodes#TOO_BIG} and {@link repackaged.soundboard.javax.websocket.OnError} annotated method (or
+ * {@link repackaged.soundboard.javax.websocket.Endpoint#onError(javax.websocket.Session, Throwable)} will be called with instance of this
  * class as {@link Throwable} parameter.
  *
  * @author Pavel Bucek (pavel.bucek at oracle.com)

@@ -42,10 +42,10 @@ package org.glassfish.tyrus.core;
 import java.util.List;
 import java.util.Map;
 
-import javax.websocket.Decoder;
-import javax.websocket.Encoder;
-import javax.websocket.Extension;
-import javax.websocket.server.ServerEndpointConfig;
+import repackaged.soundboard.javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.Encoder;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.server.ServerEndpointConfig;
 
 /**
  * Default tyrus-specific implementation of {@code TyrusServerEndpointConfig}.

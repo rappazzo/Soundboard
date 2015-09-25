@@ -43,9 +43,9 @@ package org.glassfish.tyrus.core.cluster;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.websocket.Session;
-
 import org.glassfish.tyrus.core.TyrusSession;
+
+import repackaged.soundboard.javax.websocket.Session;
 
 /**
  * Extended {@link Session} which adds distributed properties.

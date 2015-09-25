@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.DeploymentException;
 
 /**
  * Used to collect deployment errors to present these to the user together.

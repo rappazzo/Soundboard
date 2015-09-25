@@ -40,7 +40,7 @@
 
 package org.glassfish.tyrus.core;
 
-import javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.CloseReason;
 
 /**
  * Represents issue with parsing or producing websocket frame.

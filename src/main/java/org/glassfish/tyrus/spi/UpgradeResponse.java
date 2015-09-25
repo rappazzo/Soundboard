@@ -41,7 +41,7 @@ package org.glassfish.tyrus.spi;
 
 import java.util.List;
 
-import javax.websocket.HandshakeResponse;
+import repackaged.soundboard.javax.websocket.HandshakeResponse;
 
 /**
  * Abstraction for a HTTP upgrade response. A transport creates an

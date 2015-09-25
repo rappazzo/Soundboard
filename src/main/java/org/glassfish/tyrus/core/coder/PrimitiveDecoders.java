@@ -48,10 +48,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-
 import org.glassfish.tyrus.core.ReflectionHelper;
+
+import repackaged.soundboard.javax.websocket.DecodeException;
+import repackaged.soundboard.javax.websocket.Decoder;
 
 /**
  * Collection of decoders for all primitive types.

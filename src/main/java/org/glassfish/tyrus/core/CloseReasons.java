@@ -40,7 +40,7 @@
 
 package org.glassfish.tyrus.core;
 
-import javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.CloseReason;
 
 /**
  * Enum containing standard CloseReasons defined in RFC 6455, see chapter

@@ -42,13 +42,13 @@ package org.glassfish.tyrus.client.auth;
 
 import java.net.URI;
 
-import javax.websocket.DeploymentException;
-import javax.websocket.WebSocketContainer;
-
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.core.Beta;
 import org.glassfish.tyrus.spi.UpgradeRequest;
 import org.glassfish.tyrus.spi.UpgradeResponse;
+
+import repackaged.soundboard.javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.WebSocketContainer;
 
 /**
  * Authenticator provides a way how to plug-in custom authentication provider.

@@ -43,8 +43,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
+import repackaged.soundboard.javax.websocket.DecodeException;
+import repackaged.soundboard.javax.websocket.Decoder;
 
 /**
  * Built in {@link Decoder} for {@link java.io.InputStream}.

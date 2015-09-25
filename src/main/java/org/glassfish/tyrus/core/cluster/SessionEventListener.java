@@ -43,8 +43,8 @@ package org.glassfish.tyrus.core.cluster;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import javax.websocket.CloseReason;
-import javax.websocket.Session;
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.Session;
 
 /**
  * Session event listener.

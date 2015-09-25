@@ -39,8 +39,8 @@
  */
 package org.glassfish.tyrus.spi;
 
-import javax.websocket.DeploymentException;
-import javax.websocket.server.ServerEndpointConfig;
+import repackaged.soundboard.javax.websocket.DeploymentException;
+import repackaged.soundboard.javax.websocket.server.ServerEndpointConfig;
 
 import static org.glassfish.tyrus.spi.Connection.CloseListener;
 

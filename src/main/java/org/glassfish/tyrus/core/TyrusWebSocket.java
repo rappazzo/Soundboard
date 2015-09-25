@@ -47,10 +47,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.websocket.CloseReason;
-import javax.websocket.Extension;
-import javax.websocket.SendHandler;
-
 import org.glassfish.tyrus.core.frame.BinaryFrame;
 import org.glassfish.tyrus.core.frame.CloseFrame;
 import org.glassfish.tyrus.core.frame.Frame;
@@ -61,6 +57,10 @@ import org.glassfish.tyrus.core.frame.TyrusFrame;
 import org.glassfish.tyrus.core.l10n.LocalizationMessages;
 import org.glassfish.tyrus.core.monitoring.MessageEventListener;
 import org.glassfish.tyrus.spi.UpgradeRequest;
+
+import repackaged.soundboard.javax.websocket.CloseReason;
+import repackaged.soundboard.javax.websocket.Extension;
+import repackaged.soundboard.javax.websocket.SendHandler;
 
 /**
  * Tyrus representation of web socket connection.
@@ -251,7 +251,7 @@ public class TyrusWebSocket {
     }
 
     /**
-     * Closes this {@link TyrusWebSocket} using the {@link javax.websocket.CloseReason}.
+     * Closes this {@link TyrusWebSocket} using the {@link repackaged.soundboard.javax.websocket.CloseReason}.
      *
      * @param closeReason the close reason.
      */
