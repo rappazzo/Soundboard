@@ -54,8 +54,9 @@ public class GoogleTTS extends TTS {
 
    public ChunkedByteBuffer toSoundBytes(String text) throws UnsupportedEncodingException, MalformedURLException, IOException {
       String encoded = URLEncoder.encode(text, "UTF-8"); //text.replace(' ', '+')
-      URL url = new URL("http://translate.google.com/translate_tts?tl=en&ie=UTF-8&q="+encoded);
+      URL url = new URL("http://translate.google.com/translate_tts?tl=en&ie=UTF-8&client=t&q="+encoded);
       URLConnection c = url.openConnection();
+      c.setRequestProperty("Referer", "http://translate.google.com/");
       c.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
       ChunkedByteBuffer bytes = new ChunkedByteBuffer().append(c.getInputStream());
       return bytes;
