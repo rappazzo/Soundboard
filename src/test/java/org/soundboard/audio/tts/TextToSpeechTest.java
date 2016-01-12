@@ -22,18 +22,22 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
-import junit.framework.TestCase;
+
 import org.junit.Ignore;
+import org.soundboard.server.SoundboardConfiguration;
 import org.soundboard.util.ChunkedByteBuffer;
+
+import junit.framework.TestCase;
 
 public class TextToSpeechTest extends TestCase {
 
-   @Ignore
-   public void testNothing() throws Exception {
-      int i = 3;
-      if (i == 3) return;
-      ChunkedByteBuffer speech = new GoogleTTS().toSoundBytes("This is a test of the text to speech system.");
+   @Ignore("It is annoying to run every build")
+   public void testVoiceRssTTS() throws Exception {
+	  SoundboardConfiguration.create("./bin/soundboard.properties");
+      ChunkedByteBuffer speech = new VoiceRssTTS()
+    		  .toSoundBytes("This is a test of the text to speech system.");
 
+      //should be an mp3
       AudioInputStream in = AudioSystem.getAudioInputStream(speech.toInputStream());
       AudioFormat baseFormat = in.getFormat();
       AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);

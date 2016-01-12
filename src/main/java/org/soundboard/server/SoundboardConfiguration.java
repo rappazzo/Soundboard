@@ -47,7 +47,7 @@ public class SoundboardConfiguration {
    
    Properties config;
 
-   static SoundboardConfiguration create(String configFileName) {
+   public static SoundboardConfiguration create(String configFileName) {
       INSTANCE = new SoundboardConfiguration();
       try {
          INSTANCE.config = new Properties();
