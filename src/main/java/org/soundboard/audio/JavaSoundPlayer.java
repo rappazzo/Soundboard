@@ -76,8 +76,8 @@ class JavaSoundPlayer extends SoundPlayer {
       //0x08            sample data
       PAUSE.append(new byte[] {0x64,0x61,0x74,0x61});
       PAUSE.append(new byte[] {0x18,0x45,0x00,0x00});
-      //this is blank data which is a pause of about 0.2 seconds
-      for (int i = 0; i < 4422; i++) {
+      //this is blank data which is a pause of about 0.1 seconds
+      for (int i = 0; i < 2211; i++) {
          PAUSE.append(new byte[] {(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x00});
       }
    }
