@@ -66,7 +66,7 @@ public class VoiceRssTTS extends TTS {
    public ChunkedByteBuffer toSoundBytes(String text) throws UnsupportedEncodingException, MalformedURLException, IOException {
       String encoded = URLEncoder.encode(text, "UTF-8"); //text.replace(' ', '+')
       String language = "en-us";
-      URL url = new URL(String.format("http://api.voicerss.org/?key=%s&src=%s&hl=%s&r=1&c=WAV&f=16khz_16bit_stereo", apiKey, encoded, language));
+      URL url = new URL(String.format("http://api.voicerss.org/?key=%s&src=%s&hl=%s&r=0&c=WAV&f=16khz_16bit_stereo", apiKey, encoded, language));
       URLConnection c = url.openConnection();
       ChunkedByteBuffer bytes = new ChunkedByteBuffer().append(c.getInputStream());
       return bytes;
