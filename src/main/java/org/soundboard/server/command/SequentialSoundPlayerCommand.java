@@ -44,7 +44,6 @@ public class SequentialSoundPlayerCommand extends Command {
    @Override public String execute(InputService inputService, String who, String[] args, boolean isCron, boolean respondWithHtml) {
       StringBuffer out = new StringBuffer();
       LoggingService.getInstance().log((isCron ? "cron (" + who +")" : who) + ": " + args[0]);
-      SoundPlayer player = SoundPlayer.get();
       String libName = args[0].toLowerCase();
       if (!SoundLibrarian.libraryExists(libName)) {
          libName = SoundLibrarian.DEFAULT_LIBRARY;
@@ -52,6 +51,9 @@ public class SequentialSoundPlayerCommand extends Command {
       SoundLibrary lib = SoundLibrarian.getInstance(libName);
       List<String> responses = new ArrayList<String>();
       responses.addAll(lib.list());
+      
+      //the java implementation makes the sounds play smoother, but only really supports WAV/PCM byte data
+      SoundPlayer player = SoundPlayer.java();
       player.play(lib, responses.get(index < responses.size() ? index++ : 0));
       if (index >= responses.size()) {
          index = 0;

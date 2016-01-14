@@ -39,6 +39,9 @@ public abstract class SoundPlayer {
    public static SoundPlayer get() {
       return INSTANCE.get();
    }
+   public static SoundPlayer java() {
+      return JavaSoundPlayer.INSTANCE;
+   }
    
    /**
     * play a sound from the default library

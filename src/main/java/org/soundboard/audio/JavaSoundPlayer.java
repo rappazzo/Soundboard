@@ -30,6 +30,8 @@ import org.soundboard.server.SoundboardConfiguration;
 import org.soundboard.util.ChunkedByteBuffer;
 
 class JavaSoundPlayer extends SoundPlayer {
+	
+   static final JavaSoundPlayer INSTANCE = new JavaSoundPlayer();
    
    private Mixer device = null;
    private static boolean stopped = false;
