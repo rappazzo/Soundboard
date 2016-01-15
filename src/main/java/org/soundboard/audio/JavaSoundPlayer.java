@@ -21,8 +21,10 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
+
 import org.soundboard.library.SoundLibrarian;
 import org.soundboard.library.SoundLibrary;
 import org.soundboard.server.LoggingService;
@@ -33,7 +35,8 @@ class JavaSoundPlayer extends SoundPlayer {
 	
    static final JavaSoundPlayer INSTANCE = new JavaSoundPlayer();
    
-   private Mixer device = null;
+   private final Mixer device;
+   private Integer volume;
    private static boolean stopped = false;
    private static final ChunkedByteBuffer PAUSE = new ChunkedByteBuffer();
    static {
@@ -83,12 +86,17 @@ class JavaSoundPlayer extends SoundPlayer {
    }
    
    protected JavaSoundPlayer() {
-      initialize();
-   }
-   
-   public void initialize() {
+      this.volume = SoundboardConfiguration.config().getIntegerProperty("SoundPlayer.volume");
       this.device = getAudioPlaybackDevice(SoundboardConfiguration.config().getProperty(SoundboardConfiguration.AUDIO_PLAYBACK_DEVICE));
    }
+   
+   @Override public SoundPlayer setVolume(int volume) {
+	   if (volume > 0) {
+		   this.volume = volume;
+	   }
+	   return this;
+   }
+   
    /**
     * Get the Audio Playback Device with the given name.  If the device does not support playback, null is returned
     */
@@ -140,7 +148,7 @@ class JavaSoundPlayer extends SoundPlayer {
    }
    
    /**
-    * play a sound from the defaul library
+    * play a sound from the default library
     * @return info text
     */
    @Override
@@ -212,6 +220,13 @@ class JavaSoundPlayer extends SoundPlayer {
          line = (SourceDataLine)AudioSystem.getLine(info);
          line.open(decodedFormat);
          if (line != null) {
+        	FloatControl volumeControl = null;
+        	float previous = 1;
+            if (this.volume != null) {
+				volumeControl = (FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN);
+            	previous = volumeControl.getValue();
+            	volumeControl.setValue(volume.floatValue());
+            }
             // Start
             line.start();
             int nBytesRead = 0;
@@ -227,6 +242,9 @@ class JavaSoundPlayer extends SoundPlayer {
             // Stop
             line.drain();
             line.stop();
+            if (volumeControl != null) {
+            	volumeControl.setValue(previous);
+            }
             line.close();
             din.close();
          }

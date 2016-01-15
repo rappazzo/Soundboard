@@ -42,6 +42,9 @@ public abstract class SoundPlayer {
    public static SoundPlayer java() {
       return JavaSoundPlayer.INSTANCE;
    }
+   public static SoundPlayer newJavaInstance() {
+      return new JavaSoundPlayer();
+   }
    
    /**
     * play a sound from the default library
@@ -68,5 +71,10 @@ public abstract class SoundPlayer {
     * stop playing all sounds which are currently playing
     */
    public abstract void stop();
+   
+   /**
+    * adjust the volume for this player
+    */
+   public abstract SoundPlayer setVolume(int volume);
    
 }

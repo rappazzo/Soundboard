@@ -40,20 +40,21 @@ public class VoiceRssTTS extends TTS {
 	
 	public static final String API_KEY = "api-key";
 
-	String apiKey;
+	private String apiKey;
+	private SoundPlayer sbPlayer;
 	
 	public VoiceRssTTS() {
 		this.apiKey = SoundboardConfiguration.config().getProperty("TTS", API_KEY);
+		//Since this instance is playing WAV data (see the request to VoiceRSS.org) the 
+		//java player may work better for a byte stream 
+		sbPlayer = SoundPlayer.newJavaInstance();
+		sbPlayer.setVolume(10);
 	}
    
    @Override
    public String say(String text) {
       try {
          ChunkedByteBuffer bytes = toSoundBytes(text);
-         
-         //Since this instance is playing WAV data (see the request to VoiceRSS.org) the 
-         //java player may work better for a byte stream 
-         SoundPlayer sbPlayer = SoundPlayer.java();
          sbPlayer.play(bytes, text);
          return "I said \"" +text+"\"";
       } catch (Exception e) {

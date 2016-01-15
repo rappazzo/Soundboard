@@ -23,12 +23,26 @@ import java.util.List;
 import org.soundboard.library.SoundLibrarian;
 import org.soundboard.library.SoundLibrary;
 import org.soundboard.server.LoggingService;
+import org.soundboard.server.SoundboardConfiguration;
 import org.soundboard.util.ChunkedByteBuffer;
 import com.google.common.base.Joiner;
 
 public class SoundPlayerOSX extends SoundPlayer {
 
    private List<Process> NOW_PLAYING = new ArrayList();
+   
+   Integer volume;
+   public SoundPlayerOSX(){
+	   volume = SoundboardConfiguration.config().getIntegerProperty("SoundPlayer.volume");
+   }
+   
+   @Override
+   public SoundPlayer setVolume(int volume) {
+      if (volume > 0) {
+         this.volume = volume;
+      }
+      return this;
+	}
 
    /**
     * play a sound from the defaul library
@@ -62,7 +76,13 @@ public class SoundPlayerOSX extends SoundPlayer {
          for (String name : sound) {
             File audioFile = library.getFile(name);
             if (audioFile != null) {
-               toPlay.add("/usr/bin/afplay " + audioFile.getAbsolutePath());
+               StringBuilder cmd = new StringBuilder();
+               cmd.append("/usr/bin/afplay ");
+               if (volume != null) {
+            	  cmd.append("-v ").append(volume).append(' ');
+               }
+               cmd.append(audioFile.getAbsolutePath());
+               toPlay.add(cmd.toString());
             } else {
                if (result.length() > 0) {
                   result.append(", ");
