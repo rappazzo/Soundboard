@@ -6,10 +6,12 @@ package org.soundboard.server.inputservice;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.soundboard.server.LoggingService;
 import org.soundboard.server.Server;
 import org.soundboard.server.SoundboardConfiguration;
 import org.soundboard.server.command.CommandHandler;
+
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.ullink.slack.simpleslackapi.SlackChannel;
@@ -61,10 +63,10 @@ public class SlackService extends InputService {
                String content = event.getMessageContent();
                String[] command = null;
                if (event.getChannel().isDirect() ) {
-            	  // be lenient running commands surrounded (or not) with backticks
-            	  if (content.charAt(0) == '`' && content.charAt(content.length() - 1) == '`') {
-            		 content = content.substring(1, content.length() - 1);
-            	  }
+                 // be lenient running commands surrounded (or not) with backticks
+                 if (content.charAt(0) == '`' && content.charAt(content.length() - 1) == '`') {
+                   content = content.substring(1, content.length() - 1);
+                 }
                   command = content.split(" ");
                //} else if (event.getChannel().getName().equals(channel)) {
                } else {
@@ -81,32 +83,35 @@ public class SlackService extends InputService {
                      if (response.length() > 100) {
                         response = "```"+response.replaceAll("(\\r?\\n)+$", "")+"```";
                      }
+                     String cmd = command[0];
+                     boolean replyDirect = replyDirectOnly ||
+                       response.length() > 400 ||
+                       //The responses to these command are always long, and
+                       //should be published in a direct channel
+                       cmd.equals(CommandHandler.HELP) ||
+                       cmd.equals("List") ||
+                       cmd.equals("LIST") ||
+                       cmd.equals("list")
+                     ;
                      SlackChannel slackChannel = null;
-                     if (replyDirectOnly) {
+                     if (replyDirect) {
                         slackChannel = findDirectChannel(event, session);
-                     } else {
-                        String cmd = command[0];
-                        //The responses to these command are always long, and should be published in a direct channel
-                        boolean replyDirect =
-                           cmd.equals(CommandHandler.HELP) ||
-                           cmd.equals("List") ||
-                           cmd.equals("LIST") ||
-                           cmd.equals("list")
-                        ;
-
-                        if (replyDirect) {
-                           slackChannel = findDirectChannel(event, session);
+                        if (slackChannel == null) {
                            LoggingService.getInstance().log("SlackService: No private channel for "+event.getSender());
-                        } else {
-                           slackChannel = session.findChannelByName(channel);
-                           if (event.getChannel().equals(slackChannel)) {
-                        	   //suppress a double post from the relay (by not posting now)
-                        	   slackChannel = null;
-                           } else {
-                              //public messages get "mentioned"
-                              response = response.replaceFirst("^I said", "@"+event.getSender().getUserName() + ": ");
-                           }
                         }
+                     }
+                     if (slackChannel == null) {
+                       slackChannel = session.findChannelByName(channel);
+                     }
+                     if (!replyDirect) {
+                    	 //this is a public response
+	                     if (event.getChannel().equals(slackChannel)) {
+	                        //suppress a double post from the relay (by not posting now)
+	                        slackChannel = null;
+	                     } else {
+	                        //public messages get "mentioned"
+	                        response = response.replaceFirst("^I said", "@"+event.getSender().getUserName() + ": ");
+	                     }
                      }
                      if (slackChannel != null) {
                         session.sendMessage(slackChannel, response, null);
@@ -123,16 +128,16 @@ public class SlackService extends InputService {
          return false;
       }
       Server.OFFILINE_WORKER.submit(new Runnable(){
-			@Override
-			public void run() {
-				//sleep half of a second to hope that this service is registered
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-				}
-				// Get messages relayed
-				LoggingService.getInstance().subscribe(channel, getServiceName());
-			}
+         @Override
+         public void run() {
+            //sleep half of a second to hope that this service is registered
+            try {
+               Thread.sleep(500);
+            } catch (InterruptedException e) {
+            }
+            // Get messages relayed
+            LoggingService.getInstance().subscribe(channel, getServiceName());
+         }
       });
 
       return true;
