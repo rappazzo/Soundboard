@@ -1,6 +1,7 @@
 # Build and Object Folders
 classes/
 target/
+.settings
 
 #User Specific Files
 bin/soundboard.properties
