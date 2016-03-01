@@ -18,16 +18,35 @@
 package org.soundboard.library;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
+
 import org.soundboard.server.LoggingService;
 import org.soundboard.util.ChunkedByteBuffer;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 public class FilesSoundLibrary extends SoundLibrary {
 
    private Map<String, File> files = new TreeMap<String, File>();
+   private LoadingCache<File, ChunkedByteBuffer> CACHE = CacheBuilder.newBuilder()
+      .maximumSize(32L)
+      .build(new CacheLoader<File, ChunkedByteBuffer>() {
+         @Override
+         public ChunkedByteBuffer load(File source) throws Exception {
+            ChunkedByteBuffer data = new ChunkedByteBuffer();
+            FileInputStream fis = new FileInputStream(source);
+            data.append(fis);
+            fis.close();
+            return data;
+         }
+      });
 
    /**
     * add a file to the library
@@ -51,7 +70,7 @@ public class FilesSoundLibrary extends SoundLibrary {
       }
       return added;
    }
-   
+
    /**
     * get the list of files in the library (lists the short name -- lookup key)
     */
@@ -65,19 +84,28 @@ public class FilesSoundLibrary extends SoundLibrary {
     */
    @Override
    public ChunkedByteBuffer getData(String shortName) {
+      File file = files.get(shortName);
+      if (file != null && file.exists()) {
+         try {
+            return CACHE.get(file);
+         } catch (ExecutionException e) {
+            LoggingService.getInstance().serverLog(e);
+         }
+      }
       return null;
    }
-   
+
    /**
     * get the inputstream for the given short filename
     */
    @Override
    public InputStream getDataStream(String shortName) {
-      return null;
+      ChunkedByteBuffer data = getData(shortName);
+      return data != null ? data.toInputStream() : null;
    }
-   
+
    @Override public File getFile(String name) {
       return files.get(name);
    }
-   
+
 }

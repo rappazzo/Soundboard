@@ -26,20 +26,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
-import org.soundboard.audio.tts.GoogleTTS;
+
+import org.soundboard.audio.tts.VoiceRssTTS;
 import org.soundboard.server.LoggingService;
 import org.soundboard.util.ChunkedByteBuffer;
 import org.soundboard.util.ChunkedCharBuffer;
 
-public class CachedSoundLibrary extends SoundLibrary {
+public class PreCachedSoundLibrary extends SoundLibrary {
 
    private Map<String, ChunkedByteBuffer> library = new TreeMap<String, ChunkedByteBuffer>();
    private Map<String, File> files = new HashMap<String, File>();
-   
+
    /**
     * add a file to the library
     * return if the file was added to the library
@@ -65,14 +67,14 @@ public class CachedSoundLibrary extends SoundLibrary {
                   text.append(fr);
                   fr.close();
 
-                  data = new GoogleTTS().toSoundBytes(text.toString());
+                  data = new VoiceRssTTS().toSoundBytes(text.toString());
                } else {
                   data = new ChunkedByteBuffer(chunkSize, numChunks);
                   FileInputStream fis = new FileInputStream(source);
                   data.append(fis);
                   fis.close(); // Release the file lock
                }
-               
+
                //check that the data is valid audio data
                AudioInputStream audioStream = AudioSystem.getAudioInputStream(data.toInputStream());
                DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioStream.getFormat());
@@ -93,7 +95,7 @@ public class CachedSoundLibrary extends SoundLibrary {
       }
       return added;
    }
-   
+
    /**
     * get the list of files in the library (lists the short name -- lookup key)
     */
@@ -109,7 +111,7 @@ public class CachedSoundLibrary extends SoundLibrary {
    public ChunkedByteBuffer getData(String shortName) {
       return library.get(shortName.toLowerCase());
    }
-   
+
    /**
     * get the inputstream for the given short filename
     */
@@ -118,9 +120,9 @@ public class CachedSoundLibrary extends SoundLibrary {
       ChunkedByteBuffer data = library.get(shortName.toLowerCase());
       return data != null ? data.toInputStream() : null;
    }
-   
+
    @Override public File getFile(String name) {
       return files.get(name);
    }
-   
+
 }
