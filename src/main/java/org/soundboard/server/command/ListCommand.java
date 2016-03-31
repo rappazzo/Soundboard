@@ -17,20 +17,26 @@
  **/
 package org.soundboard.server.command;
 
-import java.util.*;
-import java.util.regex.*;
-import org.soundboard.library.*;
-import org.soundboard.server.*;
-import org.soundboard.server.inputservice.*;
+import java.util.Set;
+import java.util.regex.Pattern;
+import org.soundboard.library.SoundLibrarian;
+import org.soundboard.library.SoundLibrary;
+import org.soundboard.server.LoggingService;
+import org.soundboard.server.inputservice.InputService;
 import com.google.common.base.Joiner;
 
 public class ListCommand extends Command {
-   
+
    /**
     * get the command description
     */
    @Override public String getDescription() {
       return "Lists all of the sound files in the library.  ";
+   }
+
+   @Override
+   public boolean shouldRelay() {
+      return false;
    }
 
    /**
@@ -81,5 +87,5 @@ public class ListCommand extends Command {
       }
       return out.toString();
    }
-   
+
 }
